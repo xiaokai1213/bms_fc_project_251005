@@ -73,11 +73,7 @@ void TIM4_Init(void) {
 void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* tim_baseHandle) {
    if (tim_baseHandle->Instance == TIM2) {         // 判断是否为TIM2外设
       __HAL_RCC_TIM2_CLK_ENABLE();                 // 使能TIM2外设时钟
-      HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);       // 设置TIM2中断优先级（抢占=0，子优先级=0）
-      HAL_NVIC_EnableIRQ(TIM2_IRQn);               // 使能TIM2中断向量
    } else if (tim_baseHandle->Instance == TIM4) {  // 判断是否为TIM4外设
       __HAL_RCC_TIM4_CLK_ENABLE();                 // 使能TIM4外设时钟
-      HAL_NVIC_SetPriority(TIM4_IRQn, 0, 0);       // 设置TIM4中断优先级（抢占=0，子优先级=0）
-      HAL_NVIC_EnableIRQ(TIM4_IRQn);               // 使能TIM4中断向量
    }
 }

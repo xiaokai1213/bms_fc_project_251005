@@ -30,10 +30,3 @@ void Stm32_Clock_Init(void) {
       ;
    }
 }
-
-/**
- * @brief 系统滴答定时器中断函数
- */
-void SysTick_Handler(void) {
-   HAL_IncTick();
-}

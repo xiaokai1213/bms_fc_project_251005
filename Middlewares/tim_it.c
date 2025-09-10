@@ -1,14 +1,5 @@
 #include "tim_it.h"
 
-/**
- * @brief 定时器2中断响应函数
- * @param 无
- * @retval 无
- */
-void TIM2_IRQHandler(void) {
-   HAL_TIM_IRQHandler(&htim2);  // hal库定时器中断公共处理函数
-}
-
 uint16_t see = 0;
 
 /**
@@ -19,7 +10,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
       see++;
       if (see == 2500) {
          HAL_GPIO_TogglePin(LEDG_GPIO_Port, LEDG_Pin);
-         //HAL_GPIO_TogglePin(RELAY_GPIO_Port, RELAY_Pin);
+         // HAL_GPIO_TogglePin(RELAY_GPIO_Port, RELAY_Pin);
          see = 0;
       }
    }

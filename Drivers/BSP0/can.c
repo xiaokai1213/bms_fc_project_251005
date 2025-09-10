@@ -57,20 +57,5 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle) {
       GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;        // 设置为复用推挽输出
       GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;  // 设置为高速模式
       HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);        // 应用TX引脚配置
-
-      // CAN1中断初始化
-      HAL_NVIC_SetPriority(USB_LP_CAN1_RX0_IRQn, 0, 0);  // 设置RX0中断优先级(0,0)
-      HAL_NVIC_EnableIRQ(USB_LP_CAN1_RX0_IRQn);          // 使能RX0中断通道
    }
-}
-
-/**
- * @brief   can中断函数入口
- */
-void USB_LP_CAN1_RX0_IRQHandler(void) {
-   HAL_CAN_IRQHandler(&hcan);
-}
-
-void CAN1_RX1_IRQHandler(void) {
-   HAL_CAN_IRQHandler(&hcan);
 }

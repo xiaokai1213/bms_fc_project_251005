@@ -1,9 +1,7 @@
 #ifndef _LTC6804_1_BASE_DRIVE_H
 #define _LTC6804_1_BASE_DRIVE_H
 
-#include "delay.h"
 #include "main.h"
-#include "spi.h"
 
 // 电池电压寄存器选择
 #define reg_cv_all 0

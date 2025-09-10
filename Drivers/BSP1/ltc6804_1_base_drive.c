@@ -1,4 +1,6 @@
 #include "ltc6804_1_base_drive.h"
+#include "delay.h"
+#include "spi.h"
 
 /**
  * @brief   写LTC6804菊花链的配置寄存器

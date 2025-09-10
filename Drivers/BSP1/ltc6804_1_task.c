@@ -1,4 +1,5 @@
 #include "ltc6804_1_task.h"
+#include "delay.h"
 
 LTC6804_ConfigRegsTypeDef cfgr_h_ltc6804[total_ic];  // 配置寄存器全局句柄
 LTC6804_StatusRegs stat_h_ltc6804[total_ic];         // 状态寄存器全局句柄
@@ -50,7 +51,7 @@ void ltc6804_st(void) {
 
 void ltc6804_cv(void) {
    LTC6804_adcv(MD_NORMAL, DCP_DISABLED, CH_ALL);
-   //LTC6804_cvst(MD_NORMAL, ST1);
+   // LTC6804_cvst(MD_NORMAL, ST1);
    delay_ms(20);
    read_LTC6804_Battery_voltage_registers(total_ic, cv_h_ltc6804);
    for (uint8_t ic = 0; ic < total_ic; ic++) {
