@@ -1,7 +1,7 @@
 #include "tim.h"
 
-TIM_HandleTypeDef htim2;  // 定义定时器2初始化句柄
-TIM_HandleTypeDef htim4;  // 定义定时器4初始化句柄
+TIM_HandleTypeDef htim2;  // 定义定时器2初始化句柄(延时定时器)
+TIM_HandleTypeDef htim4;  // 定义定时器4初始化句柄(后台定时器)
 
 /**
  * @brief   初始化TIm2定时器
@@ -62,7 +62,12 @@ void TIM4_Init(void) {
    sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;    // 禁用主从模式同步
    HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig);  // 应用主模式同步配置
 
+   /*
    HAL_TIM_Base_Start_IT(&htim4);  // 以基础中断模式开启定时器4
+   HAL_TIM_Base_Stop_IT(&htim4);   // 停止基础中断模式定时器4
+   HAL_TIM_Base_Start(&htim4);     // 定时器轮询开始
+   HAL_TIM_Base_Stop(&htim4);      // 定时器轮询关闭
+   */
 }
 
 /**

@@ -6,6 +6,10 @@ void NVIC_Init(void) {
    // 设置优先级分组为Group2 (2位抢占, 2位响应)
    HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_2);
 
+   // 设置滴答定时器中断优先级（最高）
+   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+   HAL_NVIC_EnableIRQ(SysTick_IRQn);  // 使能滴答定时器中断
+
    // 设置CAN中断优先级 (最高)
    HAL_NVIC_SetPriority(USB_LP_CAN1_RX0_IRQn, 0, 0);  // 抢占优先级0, 响应优先级0
    HAL_NVIC_EnableIRQ(USB_LP_CAN1_RX0_IRQn);

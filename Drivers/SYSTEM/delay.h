@@ -4,7 +4,8 @@
 #include "main.h"
 #include "sys.h"
 
-void delay_us(uint32_t time);
+extern uint32_t delaytime;  // 延时器全局变量
+
 void delay_ms(uint16_t time);
 
 #endif  // _DELAY_H
