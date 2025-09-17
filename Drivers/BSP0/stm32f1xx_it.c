@@ -1,6 +1,9 @@
 #include "stm32f1xx_it.h"
 #include "can.h"
+#include "spi.h"
 #include "tim.h"
+
+// volatile避免编译器优化(在中断服务程序中使用)
 
 void NVIC_Init(void) {
    // 设置优先级分组为Group2 (2位抢占, 2位响应)
@@ -48,8 +51,6 @@ void CAN1_RX1_IRQHandler(void) {
 
 /**
  * @brief 定时器2中断响应函数（延时定时器）
- * @param 无
- * @retval 无
  */
 void TIM2_IRQHandler(void) {
    HAL_TIM_IRQHandler(&htim2);  // hal库定时器中断公共处理函数
@@ -57,9 +58,21 @@ void TIM2_IRQHandler(void) {
 
 /**
  * @brief 定时器4中断响应函数（后台定时器）
- * @param 无
- * @retval 无
  */
 void TIM4_IRQHandler(void) {
    HAL_TIM_IRQHandler(&htim4);  // hal库定时器中断公共处理函数
+}
+
+/**
+ * @brief SPI1通讯外设中断响应函数(与ltc6804通讯,硬件连接ltc6820转换成isoSPI)
+ */
+void SPI1_IRQHandler(void) {
+   HAL_SPI_IRQHandler(&hspi1);
+}
+
+/**
+ * @brief SPI2通讯外设中断响应函数
+ */
+void SPI2_IRQHandler(void) {
+   HAL_SPI_IRQHandler(&hspi2);
 }

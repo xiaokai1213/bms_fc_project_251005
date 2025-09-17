@@ -1,5 +1,6 @@
 #include "callback.h"
 #include "delay.h"
+#include "spi.h"
 #include "tim.h"
 
 /**
@@ -15,5 +16,25 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
 
    if (htim->Instance == TIM4) {
       // 定时器4，后台定时器,1ms触发一次
+   }
+}
+
+/**
+ * @brief SPI发送完成回调函数
+ * @param hspi: SPI句柄指针
+ */
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef* hspi) {
+   if (hspi->Instance == SPI1) {
+      spi1_tx_it_end_sign = 1;  // 设置发送完成标志
+   }
+}
+
+/**
+ * @brief spi接收完成回调函数
+ * @param hspi：spi句柄
+ */
+void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef* hspi) {
+   if (hspi->Instance == SPI1) {
+      spi1_rx_it_end_sign = 1;  // 设置接收完成标志
    }
 }

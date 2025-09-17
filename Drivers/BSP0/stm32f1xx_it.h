@@ -10,5 +10,7 @@ void USB_LP_CAN1_RX0_IRQHandler(void);  // can邮箱RX0中断
 void CAN1_RX1_IRQHandler(void);         // can邮箱RX1中断
 void TIM2_IRQHandler(void);             // 定时器2中断
 void TIM4_IRQHandler(void);             // 定时器4中断
+void SPI1_IRQHandler(void);             // spi1中断
+void SPI2_IRQHandler(void);             // spi2中断
 
 #endif  // _STM32F1XX_IT_H

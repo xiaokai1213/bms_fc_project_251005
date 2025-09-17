@@ -409,7 +409,7 @@ void LTC6804_clrstat(void);  // 清除状态寄存器的函数声明
 
 // 通讯函数
 void spi_write_array(uint8_t len, uint8_t data[]);                                         // 通过SPI发送字节数组的函数声明
-void spi_write_read(uint8_t tx_Data[], uint8_t tx_len, uint8_t* rx_data, uint8_t rx_len);  // 通过SPI读写字节的函数声明
+void spi_write_read(uint8_t tx_data[], uint8_t tx_len, uint8_t* rx_data, uint8_t rx_len);  // 通过SPI读写字节的函数声明
 
 // 唤醒函数
 void wakeup_sleep(void);  // 唤醒ltc6804

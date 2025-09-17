@@ -919,9 +919,7 @@ void LTC6804_clrstat(void) {
  * @param   uint8_t data[]：要发送的数据数组
  */
 void spi_write_array(uint8_t len, uint8_t data[]) {
-   for (uint8_t i = 0; i < len; i++) {
-      spi1_read_write_byte((uint8_t)data[i]);  // 逐个字节发送数据
-   }
+   spi1_tx_it((uint16_t)len, data);  // 中断发送数据
 }
 
 /**
@@ -931,13 +929,9 @@ void spi_write_array(uint8_t len, uint8_t data[]) {
  * @param   uint8_t rx_data：存储接收数据的数组
  * @param   uint8_t rx_len：要接收的字节数
  */
-void spi_write_read(uint8_t tx_Data[], uint8_t tx_len, uint8_t* rx_data, uint8_t rx_len) {
-   for (uint8_t i = 0; i < tx_len; i++) {  // 逐个发送字节
-      spi1_read_write_byte(tx_Data[i]);    // 发送一个字节
-   }
-   for (uint8_t i = 0; i < rx_len; i++) {                // 逐个接收字节
-      rx_data[i] = (uint8_t)spi1_read_write_byte(0xFF);  // 读取一个字节（发送0xFF作为填充）
-   }
+void spi_write_read(uint8_t tx_data[], uint8_t tx_len, uint8_t* rx_data, uint8_t rx_len) {
+   spi1_tx_it(tx_len, tx_data);  // 中断发送数据
+   spi1_rx_it(rx_len, rx_data);  // 中断接收数据
 }
 
 /**

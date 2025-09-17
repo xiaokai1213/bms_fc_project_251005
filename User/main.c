@@ -13,7 +13,6 @@
 // BSP1头文件
 #include "ltc6804_1_task.h"
 // Middlewares头文件
-#include "tim_it.h"
 
 CAN_TxHeaderTypeDef TxHeader;
 uint8_t TxData[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};

@@ -3,6 +3,9 @@
 SPI_HandleTypeDef hspi1;  // spi1初始化句柄
 SPI_HandleTypeDef hspi2;  // spi2初始化句柄
 
+uint8_t spi1_tx_it_end_sign = 0;  // spi1中断发送结束全局变量标志位
+uint8_t spi1_rx_it_end_sign = 0;  // spi1中断接收结束全局变量标志位
+
 /**
  * @brief  初始化SPI1外设
  * @param  无
@@ -106,12 +109,27 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle) {
 }
 
 /**
- * @brief SPI1 读写一个字节数据
- * @param txdata : 要发送的数据(1 字节)
- * @retval 接收到的数据(1 字节)
+ * @brief SPI1 以(中断)方式发送数据
+ * @param tx_size :要发送数据的长度
+ * @param tx_data : 要发送的数据
  */
-uint8_t spi1_read_write_byte(uint8_t txdata) {
-   uint8_t rxdata;
-   HAL_SPI_TransmitReceive(&hspi1, &txdata, &rxdata, 1, 1000);
-   return rxdata; /* 返回收到的数据 */
+void spi1_tx_it(uint16_t tx_size, uint8_t tx_data[]) {
+   spi1_tx_it_end_sign = 0;                        // 重置发送完成标志
+   HAL_SPI_Transmit_IT(&hspi1, tx_data, tx_size);  // 启动spi1中断发送
+   while (spi1_tx_it_end_sign == 0) {
+      ;  // 等待发送完成
+   }
+}
+
+/**
+ * @brief SPI1 以(中断)方式接收数据
+ * @param rx_size :要接收数据的长度
+ * @param rx_data : 要接收的数据
+ */
+void spi1_rx_it(uint16_t rx_size, uint8_t* rx_data) {
+   spi1_rx_it_end_sign = 0;                       // 重置接收完成标志
+   HAL_SPI_Receive_IT(&hspi1, rx_data, rx_size);  // 启动spi1中断接收
+   while (spi1_rx_it_end_sign == 0) {
+      ;  // 等待接收完成
+   }
 }
