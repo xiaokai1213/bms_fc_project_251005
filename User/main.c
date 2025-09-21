@@ -11,27 +11,9 @@
 #include "stm32f1xx_it.h"
 #include "tim.h"
 // BSP1头文件
+#include "can_task.h"
 #include "ltc6804_1_task.h"
 // Middlewares头文件
-
-CAN_TxHeaderTypeDef TxHeader;
-uint8_t TxData[8] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
-uint32_t TxMailbox;
-
-void CAN_SendMessage(void) {
-   TxHeader.StdId = 0x123;
-   TxHeader.ExtId = 0x00;
-   TxHeader.RTR = CAN_RTR_DATA;
-   TxHeader.IDE = CAN_ID_STD;
-   TxHeader.DLC = 8;
-
-   TxData[0] = (uint8_t)(cv_h_ltc6804[0].C01V);
-   TxData[1] = (uint8_t)(cv_h_ltc6804[0].C01V >> 8);
-
-   if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox) != HAL_OK) {
-      printf("can_tx_error\n");
-   }
-}
 
 int main(void) {
    // 外设初始化
@@ -48,17 +30,23 @@ int main(void) {
    // 外设驱动初始化
    LTC6804_init();
 
-   // uint8_t TxData[8] = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88};
-
-   // HAL_CAN_Start(&hcan);
-   // HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
-   // CAN_FilterConfig();
-
    while (1) {
-      CAN_SendMessage();
-
       ltc6804_cv();
+      uint8_t cv[8];
+      cv[0] = (uint8_t)(cv_h_ltc6804[0].C01V >> 8);
+      cv[1] = (uint8_t)cv_h_ltc6804[0].C01V;
+      cv[2] = (uint8_t)(cv_h_ltc6804[0].C02V >> 8);
+      cv[3] = (uint8_t)cv_h_ltc6804[0].C02V;
+      cv[4] = (uint8_t)(cv_h_ltc6804[0].C03V >> 8);
+      cv[5] = (uint8_t)cv_h_ltc6804[0].C03V;
+      cv[6] = (uint8_t)(cv_h_ltc6804[0].C04V >> 8);
+      cv[7] = (uint8_t)cv_h_ltc6804[0].C04V;
       printf("\r\n");
+      RELAY(0);
+      can_tx_extid_8(0x123, cv);
+
+      delay_ms(4000);
+      RELAY(1);
       delay_ms(4000);
    }
 }

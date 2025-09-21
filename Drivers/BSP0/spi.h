@@ -3,15 +3,13 @@
 
 #include "main.h"
 
-extern SPI_HandleTypeDef hspi1;  // spi1初始化句柄
-extern SPI_HandleTypeDef hspi2;  // spi2初始化句柄
-
+extern SPI_HandleTypeDef hspi1;      // spi1初始化句柄
+extern SPI_HandleTypeDef hspi2;      // spi2初始化句柄
 extern uint8_t spi1_tx_it_end_sign;  // spi1中断发送结束全局变量标志位
 extern uint8_t spi1_rx_it_end_sign;  // spi1中断接收结束全局变量标志位
 
-void SPI1_Init(void);  // spi1初始化函数
-void SPI2_Init(void);  // spi2初始化函数
-
+void SPI1_Init(void);                                 // spi1初始化函数
+void SPI2_Init(void);                                 // spi2初始化函数
 void spi1_tx_it(uint16_t txsize, uint8_t txdata[]);   // SPI1 以(中断)方式写数据
 void spi1_rx_it(uint16_t rx_size, uint8_t* rx_data);  // spi1以中断方式接收数据
 

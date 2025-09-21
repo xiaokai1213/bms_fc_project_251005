@@ -27,6 +27,7 @@ void CAN_Init(void) {
       // Error_Handler();  // 初始化失败时调用错误处理
    }
 
+   // 启动can
    if (HAL_CAN_Start(&hcan) != HAL_OK) {
       printf("can_not_ok\n");
    }

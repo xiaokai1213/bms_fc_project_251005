@@ -6,6 +6,4 @@
 #include "stdlib.h"
 #include "stm32f1xx_hal.h"
 
-void CAN_SendMessage(void);
-
 #endif  // _MAIN_H
