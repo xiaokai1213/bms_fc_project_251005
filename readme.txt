@@ -1,3 +1,58 @@
+// 混合架构示例：时间片轮询 + 状态机 + 事件驱动
+int main(void)
+{
+    System_Init();
+    
+    while(1)
+    {
+        // 时间片调度周期性任务
+        TimeSlice_Scheduler();
+        
+        // 处理事件队列
+        Event_Processor();
+        
+        // 状态机更新
+        StateMachine_Update();
+    }
+}
+架构思路：
+
+使用时间片轮询调度周期性任务（如电压采集、温度采集）。
+
+使用事件驱动处理异步事件（如接收到通信命令、故障信号）。
+
+使用状态机管理主要的工作模式（如正常模式、故障模式、休眠模式）。
+
+假设硬件平台为STM32，使用HAL库。
+
+步骤：
+a. 定义系统状态（状态机）
+b. 定义事件类型和事件队列
+c. 定义任务控制块（时间片轮询）
+d. 主循环中处理事件和任务调度
+
+bms_slave/
+├── bms_main.c          # 主程序文件
+├── bms_main.h          # 主头文件
+├── scheduler.c         # 时间片调度器
+├── scheduler.h         # 调度器头文件
+├── state_machine.c     # 状态机实现
+├── state_machine.h     # 状态机头文件
+├── event_queue.c       # 事件队列管理
+├── event_queue.h       # 事件队列头文件
+├── drivers/            # 驱动层
+│   ├── adc_driver.c
+│   ├── adc_driver.h
+│   ├── can_driver.c
+│   ├── can_driver.h
+│   ├── gpio_driver.c
+│   └── gpio_driver.h
+└── application/        # 应用层
+    ├── battery_monitor.c
+    ├── battery_monitor.h
+    ├── communication.c
+    └── communication.h
+
 延时函数只能在主循环中用，在中断中不可使用延时函数
 
 优化spi发送逻辑，使用中断发送
