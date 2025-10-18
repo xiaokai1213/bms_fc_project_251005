@@ -42,6 +42,18 @@ void LTC6804_init(void) {
    }
 }
 
+void ltc6804_Get_Voltage(void) {
+   LTC6804_adcv(MD_NORMAL, DCP_DISABLED, CH_ALL);                   // 电池通道ADC转换命令，以正常转换，禁止放电，所有通道模式发送命令
+   delay_ms(10);                                                    // 延时10ms等待转换完成
+   read_LTC6804_Battery_voltage_registers(total_ic, cv_h_ltc6804);  // 读取电压到电池电压储存控制句柄
+}
+
+void ltc6804_Get_temperature(void) {
+   LTC6804_adax(MD_NORMAL, CHG_ALL);                                  // GPIO通道ADC转换命令，以正常转换，所有通道模式发送命令
+   delay_ms(10);                                                      // 延时10ms等待转换完成
+   read_LTC6804_Auxiliary_voltage_registers(total_ic, av_h_ltc6804);  // 读取温度电压到温度存储控制句柄
+}
+
 void ltc6804_st(void) {
    LTC6804_adstat(MD_NORMAL, CHST_ALL);
    read_LTC6804_status_registers(total_ic, stat_h_ltc6804);

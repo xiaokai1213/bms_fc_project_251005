@@ -3,8 +3,8 @@
 SPI_HandleTypeDef hspi1;  // spi1初始化句柄
 SPI_HandleTypeDef hspi2;  // spi2初始化句柄
 
-uint8_t spi1_tx_it_end_sign = 0;  // spi1中断发送结束全局变量标志位
-uint8_t spi1_rx_it_end_sign = 0;  // spi1中断接收结束全局变量标志位
+volatile uint8_t spi1_tx_it_end_sign = 0;  // spi1中断发送结束全局变量标志位
+volatile uint8_t spi1_rx_it_end_sign = 0;  // spi1中断接收结束全局变量标志位
 
 /**
  * @brief  初始化SPI1外设
