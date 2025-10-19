@@ -15,28 +15,37 @@
 #include "can_task.h"
 #include "ltc6804_1_task.h"
 // Middlewares头文件
+#include "init.h"
 
-// 全局标志位
-system_flags_compact_t bms_flags;
+// 全局状态枚举
+bms_state_t bms_current_stat;  // bms当前主状态枚举定义
 
 int main(void) {
-   // 外设初始化
-   HAL_Init();             // HAL库初始化
-   Stm32_Clock_Init();     // 时钟初始化
-   uart_init(115200);      // 串口1初始化，中断收发，支持打印函数
-   LED_RELAY_GPIO_Init();  // LED与继电器初始化
-   TIM2_Init();            // 定时器2初始化（延时定时器）
-   TIM4_Init();            // 定时器4初始化（后台定时器）
-   SPI1_Init();            // spi1初始化
-   CAN_Init();             // can外设初始化
-   NVIC_Init();            // 中断初始化；中断统一管理
+   main_stat_init();  // 状态机初始化
 
-   // 外设驱动初始化
-   LTC6804_init();
+   switch (bms_current_stat) {
+      case state_init:                // 初始化状态
+         uint8_t x = init_execute();  // 初始化执行函数
 
-   while (1) {
-      flag_task_time();
+         break;
+      case state_idle:  // 空闲状态
+         break;
+      case state_fault:  // 故障状态
+         break;
+      case state_self_test:  // 自检状态
+         break;
+      case state_receive_cmd:  // 接收主控命令
+         break;
+      case state_working:  // 工作状态
+         break;
+
+      default:
+         break;
    }
+}
+
+void main_stat_init() {
+   bms_current_stat = state_init;  // 上电后进入初始化状态
 }
 
 void flag_task_time() {
