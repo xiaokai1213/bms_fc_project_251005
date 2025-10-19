@@ -35,38 +35,46 @@ int main(void) {
    LTC6804_init();
 
    while (1) {
-      if (task_5ms.flag == 1) {  // 5ms周期性任务
-         // 清除标志位
-         task_5ms.flag = 0;
-      }
-
-      if (task_10ms.flag == 1) {  // 10ms周期性任务
-         // 清除标志位
-         task_10ms.flag = 0;
-      }
-
-      if (task_100ms.flag == 1) {    // 100ms周期性任务
-         ltc6804_Get_Voltage();      // 获取电池电压
-         ltc6804_Get_temperature();  // 获取电池温度
-         // 清除标志位
-         task_100ms.flag = 0;
-      }
-      ltc6804_cv();
-      uint8_t cv[8];
-      cv[0] = (uint8_t)(cv_h_ltc6804[0].C01V >> 8);
-      cv[1] = (uint8_t)cv_h_ltc6804[0].C01V;
-      cv[2] = (uint8_t)(cv_h_ltc6804[0].C02V >> 8);
-      cv[3] = (uint8_t)cv_h_ltc6804[0].C02V;
-      cv[4] = (uint8_t)(cv_h_ltc6804[0].C03V >> 8);
-      cv[5] = (uint8_t)cv_h_ltc6804[0].C03V;
-      cv[6] = (uint8_t)(cv_h_ltc6804[0].C04V >> 8);
-      cv[7] = (uint8_t)cv_h_ltc6804[0].C04V;
-      printf("\r\n");
-      RELAY(0);
-      can_tx_extid_8(0x123, cv);
-
-      delay_ms(4000);
-      RELAY(1);
-      delay_ms(4000);
+      flag_task_time();
    }
+}
+
+void flag_task_time() {
+   if (task_5ms.flag == 1) {  // 5ms周期性任务
+      // 清除标志位
+      task_5ms.flag = 0;
+   }
+
+   if (task_10ms.flag == 1) {  // 10ms周期性任务
+      // 清除标志位
+      task_10ms.flag = 0;
+   }
+
+   if (task_100ms.flag == 1) {    // 100ms周期性任务
+      ltc6804_Get_Voltage();      // 获取电池电压
+      ltc6804_Get_temperature();  // 获取电池温度
+      // 清除标志位
+      task_100ms.flag = 0;
+   }
+}
+
+// 用于暂时存储周期性代码
+void stand_xy(void) {
+   ltc6804_cv();
+   uint8_t cv[8];
+   cv[0] = (uint8_t)(cv_h_ltc6804[0].C01V >> 8);
+   cv[1] = (uint8_t)cv_h_ltc6804[0].C01V;
+   cv[2] = (uint8_t)(cv_h_ltc6804[0].C02V >> 8);
+   cv[3] = (uint8_t)cv_h_ltc6804[0].C02V;
+   cv[4] = (uint8_t)(cv_h_ltc6804[0].C03V >> 8);
+   cv[5] = (uint8_t)cv_h_ltc6804[0].C03V;
+   cv[6] = (uint8_t)(cv_h_ltc6804[0].C04V >> 8);
+   cv[7] = (uint8_t)cv_h_ltc6804[0].C04V;
+   printf("\r\n");
+   RELAY(0);
+   can_tx_extid_8(0x123, cv);
+
+   delay_ms(4000);
+   RELAY(1);
+   delay_ms(4000);
 }

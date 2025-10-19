@@ -4,7 +4,7 @@
 
 /**
  * @brief 扩展can发送八位数据帧
- * @param extid:扩展标识符(29位)
+ * @param extid:扩展标识符(29位)，0x1FFFFFFF 是最大的29位数
  * @param data[8]: 要发送的数据指针
  */
 void can_tx_extid_8(uint32_t extid, uint8_t data[8]) {
@@ -33,18 +33,11 @@ void can_tx_extid_8(uint32_t extid, uint8_t data[8]) {
 
 /*
 CAN_TxHeaderTypeDef：定义发送消息的帧格式，包括：
-
 StdId：标准标识符（11位）
-
 ExtId：扩展标识符（29位）
-
 IDE：标识符扩展（CAN_ID_STD 或 CAN_ID_EXT）
-
 RTR：远程传输请求（CAN_RTR_DATA 或 CAN_RTR_REMOTE）
-
 DLC：数据长度代码（0-8）
-
 CAN_RxHeaderTypeDef：定义接收消息的帧格式，字段与 CAN_TxHeaderTypeDef 类似，用于存放接收到的消息头信息。
-
 CAN_FilterTypeDef：定义CAN滤波器的配置参数。
 */

@@ -17,4 +17,8 @@ typedef struct {
 
 extern system_flags_compact_t bms_flags;
 
+void stand_xy(void);  // 用于暂时存储周期性代码
+
+void flag_task_time();  // 重构的周期性任务代码
+
 #endif  // _MAIN_H
