@@ -82,6 +82,6 @@ typedef __I uint8_t vuc8;
 #define PGout(n)               BIT_ADDR(GPIOG_ODR_Addr, n)  // 输出
 #define PGin(n)                BIT_ADDR(GPIOG_IDR_Addr, n)  // 输入
 
-void Stm32_Clock_Init(void);  // 时钟系统配置
+HAL_StatusTypeDef Stm32_Clock_Init(void);  // 时钟系统配置
 
 #endif  // _SYS_H

@@ -21,13 +21,17 @@ typedef enum {
    event_power_on = 0,  // 上电事件
 } bms_event_t;
 
+// 状态机结构 - 管理状态机运行所需的所有数据
+typedef struct {
+   bms_state_t current_state;  // 当前状态
+   bms_state_t new_state;      // 新状态
+   bms_event_t current_event;  // 当前事件
+   bms_event_t new_event;      // 新事件
+} bms_state_machine_t;
+
 // 全局枚举声明
-extern bms_state_t bms_current_stat;  // bms当前主状态枚举定义
+extern bms_state_machine_t bms_sm;  // bms当前主状态枚举定义
 
 // 函数声明
-void stand_xy(void);    // 用于暂时存储周期性代码
-void flag_task_time();  // 重构的周期性任务代码
-
-void main_stat_init();  // 主函数状态初始化
 
 #endif  // _MAIN_H

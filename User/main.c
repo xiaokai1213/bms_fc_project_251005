@@ -17,73 +17,25 @@
 // Middlewares头文件
 #include "init.h"
 
-// 全局状态枚举
-bms_state_t bms_current_stat;  // bms当前主状态枚举定义
+// 全局状态机实例
+bms_state_machine_t bms_sm;
 
-int main(void) {
-   main_stat_init();  // 状态机初始化
+// 主函数
+int main() {
+   HAL_Init();          // HAL库初始化
+   Stm32_Clock_Init();  // 时钟初始化
 
-   switch (bms_current_stat) {
-      case state_init:                // 初始化状态
-         uint8_t x = init_execute();  // 初始化执行函数
-
-         break;
-      case state_idle:  // 空闲状态
-         break;
-      case state_fault:  // 故障状态
-         break;
-      case state_self_test:  // 自检状态
-         break;
-      case state_receive_cmd:  // 接收主控命令
-         break;
-      case state_working:  // 工作状态
-         break;
-
-      default:
-         break;
+   bms_sm.current_state = state_init;      // 初始化状态
+   bms_sm.new_state = state_init;          // 初始化状态
+   bms_sm.current_event = event_power_on;  // 上电事件
+   bms_sm.new_event = event_power_on;      // 上电事件
+   while (1) {
+      /* code */
    }
 }
 
-void main_stat_init() {
-   bms_current_stat = state_init;  // 上电后进入初始化状态
-}
-
-void flag_task_time() {
-   if (task_5ms.flag == 1) {  // 5ms周期性任务
-      // 清除标志位
-      task_5ms.flag = 0;
-   }
-
-   if (task_10ms.flag == 1) {  // 10ms周期性任务
-      // 清除标志位
-      task_10ms.flag = 0;
-   }
-
-   if (task_100ms.flag == 1) {    // 100ms周期性任务
-      ltc6804_Get_Voltage();      // 获取电池电压
-      ltc6804_Get_temperature();  // 获取电池温度
-      // 清除标志位
-      task_100ms.flag = 0;
-   }
-}
-
-// 用于暂时存储周期性代码
-void stand_xy(void) {
-   ltc6804_cv();
-   uint8_t cv[8];
-   cv[0] = (uint8_t)(cv_h_ltc6804[0].C01V >> 8);
-   cv[1] = (uint8_t)cv_h_ltc6804[0].C01V;
-   cv[2] = (uint8_t)(cv_h_ltc6804[0].C02V >> 8);
-   cv[3] = (uint8_t)cv_h_ltc6804[0].C02V;
-   cv[4] = (uint8_t)(cv_h_ltc6804[0].C03V >> 8);
-   cv[5] = (uint8_t)cv_h_ltc6804[0].C03V;
-   cv[6] = (uint8_t)(cv_h_ltc6804[0].C04V >> 8);
-   cv[7] = (uint8_t)cv_h_ltc6804[0].C04V;
-   printf("\r\n");
-   RELAY(0);
-   can_tx_extid_8(0x123, cv);
-
-   delay_ms(4000);
-   RELAY(1);
-   delay_ms(4000);
-}
+/**
+ * @brief   状态机事件处理函数，状态机核心代码，根据当前事件决定状态转换
+ * @param   event：要处理的事件
+ */
+void bms_sm_handle_event(bms_event_t event) {}

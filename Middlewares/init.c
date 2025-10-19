@@ -2,8 +2,6 @@
 
 uint8_t init_execute() {
    // 外设初始化
-   HAL_Init();             // HAL库初始化
-   Stm32_Clock_Init();     // 时钟初始化
    uart_init(115200);      // 串口1初始化，中断收发，支持打印函数
    LED_RELAY_GPIO_Init();  // LED与继电器初始化
    TIM2_Init();            // 定时器2初始化（延时定时器）

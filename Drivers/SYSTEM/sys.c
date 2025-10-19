@@ -1,7 +1,11 @@
 #include "sys.h"
 
 // 时钟系统配置函数
-void Stm32_Clock_Init(void) {
+/**
+ * @brief   时钟系统配置函数
+ * @return  若正常则返回HAL_OK
+ */
+HAL_StatusTypeDef Stm32_Clock_Init(void) {
    HAL_StatusTypeDef ret = HAL_OK;
    RCC_OscInitTypeDef RCC_OscInitStructure;
    RCC_ClkInitTypeDef RCC_ClkInitStructure;
@@ -15,7 +19,7 @@ void Stm32_Clock_Init(void) {
    ret = HAL_RCC_OscConfig(&RCC_OscInitStructure);                // 初始化
 
    if (ret != HAL_OK) {
-      ;
+      return ret;
    }
 
    // 选中PLL作为系统时钟源并且配置HCLK,PCLK1和PCLK2
@@ -27,6 +31,6 @@ void Stm32_Clock_Init(void) {
    ret = HAL_RCC_ClockConfig(&RCC_ClkInitStructure, FLASH_LATENCY_2);  // 同时设置FLASH延时周期为2WS，也就是3个CPU周期。
 
    if (ret != HAL_OK) {
-      ;
+      return ret;
    }
 }
