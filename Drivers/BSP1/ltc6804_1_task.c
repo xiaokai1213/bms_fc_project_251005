@@ -10,8 +10,8 @@ AuxVoltageRegs av_h_ltc6804[total_ic];               // 辅助电压全局句柄
  * @brief   ltc6804初始化函数
  */
 void LTC6804_init(void) {
-   GPIO_InitTypeDef GPIO_InitStruct;  // 定义GPIO初始化结构体
-   //__HAL_RCC_GPIOA_CLK_ENABLE();                  // 6804片选脚时钟使能
+   GPIO_InitTypeDef GPIO_InitStruct;              // 定义GPIO初始化结构体
+   __HAL_RCC_GPIOA_CLK_ENABLE();                  // 6804片选脚时钟使能
    GPIO_InitStruct.Pin = GPIO_PIN_4;              // PA4(CS)
    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;    // 推挽输出
    GPIO_InitStruct.Pull = GPIO_PULLUP;            // 上拉电阻

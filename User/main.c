@@ -16,37 +16,38 @@
 #include "ltc6804_1_task.h"
 // Middlewares头文件
 #include "init.h"
+#include "standby.h"
 
 // 全局状态机实例
-bms_state_machine_t bms_sm;
+bms_state_t bms_state;      // bms状态
+bms_event_t event_trigger;  // 事件戳
 
 // 主函数
 int main() {
-   HAL_Init();          // HAL库初始化
-   Stm32_Clock_Init();  // 时钟初始化
-
-   bms_sm.current_state = state_init;      // 初始化状态
-   bms_sm.new_state = state_init;          // 初始化状态
-   bms_sm.current_event = event_power_on;  // 上电事件
-   bms_sm.new_event = event_power_on;      // 上电事件
+   HAL_Init();                           // HAL库初始化
+   Stm32_Clock_Init();                   // 时钟初始化
+   bms_sm_handle_event(event_power_on);  // 上电事件
    while (1) {
-      bms_sm_dispatch();  // 执行状态机调度函数
-      delay_ms(2);        // 延时2ms限制状态机执行频率
+      bms_state_machine_dispatch();  // 执行状态机调度函数
+      delay_ms(2);                   // 延时2ms限制状态机执行频率
    }
 }
 /**
- * @brief   状态机调度函数
+ * @brief   状态机调度函数，在主函数中循环调用
  */
-void bms_sm_dispatch() {
-   switch (bms_sm.current_state) {  // 输入当前状态
-      case state_init:              // 初始化状态
-         init_execute();            // 初始化执行函数
+void bms_state_machine_dispatch(void) {
+   switch (bms_state) {   // 输入当前状态
+      case state_init:    // 初始化状态
+         init_execute();  // 初始化执行函数
          break;
-      case state_self_test:  // 自检状态
+      case state_standby:    // 待机状态
+         standby_execute();  // 待机执行函数
          break;
       case state_runing:  // 运行状态
          break;
       case state_fault:  // 故障状态
+         break;
+      case state_idle:  // 空闲状态
          break;
       default:
          break;
@@ -59,11 +60,35 @@ void bms_sm_dispatch() {
  */
 void bms_sm_handle_event(bms_event_t event) {
    switch (event) {
-      case event_power_on:
-         init_execute();  // 初始化执行函数
+      case event_power_on:                // 上电事件分支
+         event_trigger = event_power_on;  // 事件戳
+         bms_state = state_init;          // bms状态变为初始化状态
          break;
-
-      default:
+      case event_init_complete:                // 初始化完成事件分支
+         event_trigger = event_init_complete;  // 事件戳
+         bms_state = state_standby;            // bms状态变为待机状态
+         break;
+      case event_self_test:  // 自检事件分支
+         break;
+      case event_self_test_complete:  // 自检完成事件分支
+         break;
+      case event_voltage_collect:                // 电压采集事件分支
+         event_trigger = event_voltage_collect;  // 事件戳
+         bms_state = state_runing;
+         break;
+      case event_voltage_collect_complete:  // 电压采集完成事件分支
+         break;
+      case event_temp_collect:  // 温度采集事件分支
+         break;
+      case event_temp_collect_complete:  // 温度采集完成事件分支
+         break;
+      case event_voltage_data_send:  // 电压数据发送事件分支
+         break;
+      case event_temp_data_send:  // 温度数据发送事件分支
+         break;
+      case event_data_send_complete:  // 数据发送完成事件分支
+         break;
+      default:  // 默认分支
          break;
    }
 }

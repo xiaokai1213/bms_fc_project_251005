@@ -33,4 +33,5 @@ HAL_StatusTypeDef Stm32_Clock_Init(void) {
    if (ret != HAL_OK) {
       return ret;
    }
+   return ret;
 }

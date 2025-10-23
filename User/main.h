@@ -6,33 +6,42 @@
 #include "stdlib.h"
 #include "stm32f1xx_hal.h"
 
+// 设置最大电压为4.2V则数值为42000
+#define max_cell_voltage 42000  // 最大值不超过65535
+#define min_cell_voltage 32000  // 最小值不小于1
+
 // 状态枚举定义-列出bms从控所有可能状态
 typedef enum {
-   state_init = 0,   // 初始化：外设初始化；ltc6804初始化；等待接收主控关键数据
-   state_self_test,  // 自检状态：检查ltc6804关键数据
-   state_fault,      // 故障状态
-   state_runing,     // 运行状态
-   state_idle        // 空闲状态
+   state_init = 0,  // 初始化：外设初始化；ltc6804初始化
+   state_standby,   // 待机状态：进行自检和检查任务运行标志位
+   state_fault,     // 故障状态
+   state_runing,    // 运行状态
+   state_idle,      // 空闲状态
+   s
 } bms_state_t;
 
 // 事件枚举定义-定义触发状态转换的所有事件
 typedef enum {
-   event_power_on = 0,  // 上电事件
+   event_power_on = 0,              // 上电事件
+   event_init_complete,             // 初始化完成
+   event_self_test,                 // 自检
+   event_self_test_complete,        // 自检完成
+   event_voltage_collect,           // 电压采集
+   event_voltage_collect_complete,  // 电压采集完成
+   event_temp_collect,              // 温度采集
+   event_temp_collect_complete,     // 温度采集完成
+   event_voltage_data_send,         // 电压数据发送
+   event_temp_data_send,            // 温度数据发送
+   event_data_send_complete,        // 数据发送完成
+   e
 } bms_event_t;
 
-// 状态机结构 - 管理状态机运行所需的所有数据
-typedef struct {
-   bms_state_t current_state;  // 当前状态
-   bms_state_t new_state;      // 新状态
-   bms_event_t current_event;  // 当前事件
-   bms_event_t new_event;      // 新事件
-} bms_state_machine_t;
-
 // 全局枚举声明
-extern bms_state_machine_t bms_sm;  // bms当前主状态枚举定义
+extern bms_state_t bms_state;      // bms当前主状态枚举定义
+extern bms_event_t event_trigger;  // 事件戳
 
 // 函数声明
-void bms_sm_dispatch();                       // 状态机调度函数
+void bms_state_machine_dispatch(void);        // 状态机调度函数
 void bms_sm_handle_event(bms_event_t event);  // 状态机事件处理函数，状态机核心代码，根据当前事件决定状态转换
 
 #endif  // _MAIN_H

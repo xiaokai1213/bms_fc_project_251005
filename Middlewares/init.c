@@ -1,6 +1,13 @@
 #include "init.h"
+#include "can.h"
+#include "led_relay_gpio.h"
+#include "ltc6804_1_task.h"
+#include "spi.h"
+#include "stm32f1xx_it.h"
+#include "tim.h"
+#include "usart.h"
 
-uint8_t init_execute() {
+void init_execute(void) {
    // 外设初始化
    uart_init(115200);      // 串口1初始化，中断收发，支持打印函数
    LED_RELAY_GPIO_Init();  // LED与继电器初始化
@@ -9,8 +16,8 @@ uint8_t init_execute() {
    SPI1_Init();            // spi1初始化
    CAN_Init();             // can外设初始化
    NVIC_Init();            // 中断初始化；中断统一管理
-
-   // 外设驱动初始化
+   // ltc6804初始化
    LTC6804_init();
-   return 0;
+
+   bms_sm_handle_event(event_init_complete);  // 初始化完成事件
 }
