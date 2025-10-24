@@ -19,5 +19,5 @@ void init_execute(void) {
    // ltc6804初始化
    LTC6804_init();
 
-   bms_sm_handle_event(event_init_complete);  // 初始化完成事件
+   bms_sm_handle_event(event_enter_standby);  // 进入待机事件
 }

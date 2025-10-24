@@ -16,6 +16,7 @@
 #include "ltc6804_1_task.h"
 // Middlewares头文件
 #include "init.h"
+#include "runing.h"
 #include "standby.h"
 
 // 全局状态机实例
@@ -32,6 +33,7 @@ int main() {
       delay_ms(2);                   // 延时2ms限制状态机执行频率
    }
 }
+
 /**
  * @brief   状态机调度函数，在主函数中循环调用
  */
@@ -40,15 +42,21 @@ void bms_state_machine_dispatch(void) {
       case state_init:    // 初始化状态
          init_execute();  // 初始化执行函数
          break;
+
       case state_standby:    // 待机状态
          standby_execute();  // 待机执行函数
          break;
-      case state_runing:  // 运行状态
+
+      case state_runing:    // 运行状态
+         runing_execute();  // 运行执行函数
          break;
+
       case state_fault:  // 故障状态
          break;
+
       case state_idle:  // 空闲状态
          break;
+
       default:
          break;
    }
@@ -60,34 +68,38 @@ void bms_state_machine_dispatch(void) {
  */
 void bms_sm_handle_event(bms_event_t event) {
    switch (event) {
-      case event_power_on:                // 上电事件分支
+      case event_power_on:                // 上电事件
          event_trigger = event_power_on;  // 事件戳
          bms_state = state_init;          // bms状态变为初始化状态
          break;
-      case event_init_complete:                // 初始化完成事件分支
-         event_trigger = event_init_complete;  // 事件戳
+
+      case event_enter_standby:                // 进入待机事件
+         event_trigger = event_enter_standby;  // 事件戳
          bms_state = state_standby;            // bms状态变为待机状态
          break;
+
       case event_self_test:  // 自检事件分支
          break;
-      case event_self_test_complete:  // 自检完成事件分支
-         break;
+
       case event_voltage_collect:                // 电压采集事件分支
          event_trigger = event_voltage_collect;  // 事件戳
-         bms_state = state_runing;
+         bms_state = state_runing;               // 进入运行状态执行对应任务
          break;
-      case event_voltage_collect_complete:  // 电压采集完成事件分支
+
+      case event_temp_collect:                // 温度采集事件分支
+         event_trigger = event_temp_collect;  // 事件戳
+         bms_state = state_runing;            // 进入运行状态执行对应任务
          break;
-      case event_temp_collect:  // 温度采集事件分支
-         break;
-      case event_temp_collect_complete:  // 温度采集完成事件分支
-         break;
+
       case event_voltage_data_send:  // 电压数据发送事件分支
          break;
+
       case event_temp_data_send:  // 温度数据发送事件分支
          break;
+
       case event_data_send_complete:  // 数据发送完成事件分支
          break;
+
       default:  // 默认分支
          break;
    }

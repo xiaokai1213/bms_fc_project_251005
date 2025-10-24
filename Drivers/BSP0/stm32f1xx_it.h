@@ -6,6 +6,7 @@
 void NVIC_Init(void);
 
 void SysTick_Handler(void);             // 系统滴答中断
+void USB_HP_CAN1_TX_IRQHandler(void);   // can发送消息中断
 void USB_LP_CAN1_RX0_IRQHandler(void);  // can邮箱RX0中断
 void CAN1_RX1_IRQHandler(void);         // can邮箱RX1中断
 void TIM2_IRQHandler(void);             // 定时器2中断

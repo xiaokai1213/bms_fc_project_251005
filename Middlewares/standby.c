@@ -10,9 +10,12 @@ void standby_execute(void) {
       task_voltage_collect.flag = 0;               // 标志位置0
       return;                                      // 结束执行函数
    }
+
    if (task_temp_collect.flag == 1) {
       bms_sm_handle_event(event_temp_collect);
       task_temp_collect.flag = 0;
       return;
    }
+
+   bms_sm_handle_event(event_enter_standby);  // 无事件触发重新进入待机
 }

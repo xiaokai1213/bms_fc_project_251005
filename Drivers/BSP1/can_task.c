@@ -4,7 +4,7 @@
 
 /**
  * @brief 扩展can发送八位数据帧
- * @param extid:扩展标识符(29位)，0x1FFFFFFF 是最大的29位数
+ * @param extid:扩展标识符(29位)，0x1FFFFFFF是最大的29位数
  * @param data[8]: 要发送的数据指针
  */
 void can_tx_extid_8(uint32_t extid, uint8_t data[8]) {
@@ -26,7 +26,7 @@ void can_tx_extid_8(uint32_t extid, uint8_t data[8]) {
    TxHeader.TransmitGlobalTime = DISABLE;
 
    // 发送消息
-   if (HAL_CAN_AddTxMessage(&hcan, &TxHeader, txdata, &TxMailbox) != HAL_OK) {
+   if (HAL_CAN_AddTxMessage(&hcan1, &TxHeader, txdata, &TxMailbox) != HAL_OK) {
       printf("can_tx_error\n");
    }
 }

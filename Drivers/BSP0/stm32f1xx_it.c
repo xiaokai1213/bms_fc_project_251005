@@ -14,6 +14,8 @@ void NVIC_Init(void) {
    HAL_NVIC_EnableIRQ(SysTick_IRQn);  // 使能滴答定时器中断
 
    // 设置CAN中断优先级 (最高)
+   HAL_NVIC_SetPriority(USB_HP_CAN1_TX_IRQn, 0, 0);  // 抢占优先级0, 响应优先级0
+   HAL_NVIC_EnableIRQ(USB_HP_CAN1_TX_IRQn);
    HAL_NVIC_SetPriority(USB_LP_CAN1_RX0_IRQn, 0, 0);  // 抢占优先级0, 响应优先级0
    HAL_NVIC_EnableIRQ(USB_LP_CAN1_RX0_IRQn);
    HAL_NVIC_SetPriority(CAN1_RX1_IRQn, 0, 0);  // 抢占优先级0, 响应优先级0
@@ -39,17 +41,24 @@ void SysTick_Handler(void) {
 }
 
 /**
+ * @brief   can发送中断函数入口
+ */
+void USB_HP_CAN1_TX_IRQHandler(void) {
+   HAL_CAN_IRQHandler(&hcan1);  // can中断处理公共函数
+}
+
+/**
  * @brief can邮箱0中断函数入口
  */
 void USB_LP_CAN1_RX0_IRQHandler(void) {
-   HAL_CAN_IRQHandler(&hcan);
+   HAL_CAN_IRQHandler(&hcan1);  // can中断处理公共函数
 }
 
 /**
  * @brief can邮箱1中断函数入口
  */
 void CAN1_RX1_IRQHandler(void) {
-   HAL_CAN_IRQHandler(&hcan);
+   HAL_CAN_IRQHandler(&hcan1);  // can中断处理公共函数
 }
 
 /**

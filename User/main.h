@@ -22,17 +22,14 @@ typedef enum {
 
 // 事件枚举定义-定义触发状态转换的所有事件
 typedef enum {
-   event_power_on = 0,              // 上电事件
-   event_init_complete,             // 初始化完成
-   event_self_test,                 // 自检
-   event_self_test_complete,        // 自检完成
-   event_voltage_collect,           // 电压采集
-   event_voltage_collect_complete,  // 电压采集完成
-   event_temp_collect,              // 温度采集
-   event_temp_collect_complete,     // 温度采集完成
-   event_voltage_data_send,         // 电压数据发送
-   event_temp_data_send,            // 温度数据发送
-   event_data_send_complete,        // 数据发送完成
+   event_power_on = 0,        // 上电
+   event_enter_standby,       // 进入待机
+   event_self_test,           // 自检
+   event_voltage_collect,     // 电压采集
+   event_temp_collect,        // 温度采集
+   event_voltage_data_send,   // 电压数据发送
+   event_temp_data_send,      // 温度数据发送
+   event_data_send_complete,  // 数据发送完成
    e
 } bms_event_t;
 

@@ -1,4 +1,5 @@
 #include "callback.h"
+#include "can.h"
 #include "delay.h"
 #include "spi.h"
 #include "tim.h"
@@ -8,6 +9,7 @@ task_scheduler_t task_5ms = {0, 5, 0};                // 5ms周期任务调度�
 task_scheduler_t task_temp_collect = {0, 100, 0};     // 100ms周期任务调度器定义
 task_scheduler_t task_voltage_collect = {0, 100, 0};  // 100ms周期任务调度器定义
 
+/********************************************************TIM定时器中断****************************************************/
 /**
  * @brief 基本定时器周期结束回调函数
  * @param 定时器句柄，传入一个定时器
@@ -44,6 +46,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
    }
 }
 
+/********************************************************SPI中断****************************************************/
 /**
  * @brief SPI发送完成回调函数
  * @param hspi: SPI句柄指针
@@ -63,3 +66,63 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef* hspi) {
       spi1_rx_it_end_sign = 1;  // 设置接收完成标志
    }
 }
+
+/********************************************************CAN中断发送完成****************************************************/
+/**
+ * @brief   当CAN的发送邮箱0（Tx Mailbox 0）完成一次发送时，此回调函数被调用。
+ */
+void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef* hcan) {}
+
+/**
+ * @brief   当CAN的发送邮箱1（Tx Mailbox 1）完成一次发送时，此回调函数被调用。
+ */
+void HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef* hcan) {}
+
+/**
+ * @brief   当CAN的发送邮箱2（Tx Mailbox 2）完成一次发送时，此回调函数被调用。
+ */
+void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef* hcan) {}
+
+/********************************************************CAN中断发送被中止****************************************************/
+/**
+ * @brief   当CAN的发送邮箱0的发送被中止时，此回调函数被调用。
+ */
+void HAL_CAN_TxMailbox0AbortCallback(CAN_HandleTypeDef* hcan) {}
+
+/**
+ * @brief   当CAN的发送邮箱1的发送被中止时，此回调函数被调用。用法同邮箱0。
+ */
+void HAL_CAN_TxMailbox1AbortCallback(CAN_HandleTypeDef* hcan) {}
+
+/**
+ * @brief   当CAN的发送邮箱2的发送被中止时，此回调函数被调用。用法同邮箱0。
+ */
+void HAL_CAN_TxMailbox2AbortCallback(CAN_HandleTypeDef* hcan) {}
+
+/********************************************************CAN邮箱0接收中断****************************************************/
+/**
+ * @brief   当CAN的接收Fifo0中有消息挂起（即收到新消息）时，此回调函数被调用。
+ */
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {}
+
+/**
+ * @brief   当CAN的接收Fifo0已满时，此回调函数被调用。
+ */
+void HAL_CAN_RxFifo0FullCallback(CAN_HandleTypeDef* hcan) {}
+
+/********************************************************CAN邮箱1接收中断****************************************************/
+/**
+ * @brief   当CAN的接收Fifo1中有消息挂起（即收到新消息）时，此回调函数被调用。
+ */
+void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef* hcan) {}
+
+/**
+ * @brief   当CAN的接收Fifo1已满时，此回调函数被调用。
+ */
+void HAL_CAN_RxFifo1FullCallback(CAN_HandleTypeDef* hcan) {}
+
+/********************************************************CAN错误处理****************************************************/
+/**
+ * @brief   当CAN发生错误时，此回调函数被调用。
+ */
+void HAL_CAN_ErrorCallback(CAN_HandleTypeDef* hcan) {}
