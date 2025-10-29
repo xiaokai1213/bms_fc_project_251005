@@ -4,10 +4,12 @@
 #include "spi.h"
 #include "tim.h"
 
+#include "standby.h"
+
 volatile uint32_t delaytime = 0;                      // 延时器计数器（全局变量）
-task_scheduler_t task_5ms = {0, 5, 0};                // 5ms周期任务调度器定义
-task_scheduler_t task_temp_collect = {0, 100, 0};     // 100ms周期任务调度器定义
-task_scheduler_t task_voltage_collect = {0, 100, 0};  // 100ms周期任务调度器定义
+volatile task_scheduler_t task_5ms = {0, 5, 0};                // 5ms周期任务调度器定义
+volatile task_scheduler_t task_temp_collect = {0, 500, 0};     // 100ms周期任务调度器定义
+volatile task_scheduler_t task_voltage_collect = {0, 500, 0};  // 100ms周期任务调度器定义
 
 /********************************************************TIM定时器中断****************************************************/
 /**
@@ -103,23 +105,31 @@ void HAL_CAN_TxMailbox2AbortCallback(CAN_HandleTypeDef* hcan) {}
 /**
  * @brief   当CAN的接收Fifo0中有消息挂起（即收到新消息）时，此回调函数被调用。
  */
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {}
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan) {
+   cat = 1;
+}
 
 /**
  * @brief   当CAN的接收Fifo0已满时，此回调函数被调用。
  */
-void HAL_CAN_RxFifo0FullCallback(CAN_HandleTypeDef* hcan) {}
+void HAL_CAN_RxFifo0FullCallback(CAN_HandleTypeDef* hcan) {
+   cat = 1;
+}
 
 /********************************************************CAN邮箱1接收中断****************************************************/
 /**
  * @brief   当CAN的接收Fifo1中有消息挂起（即收到新消息）时，此回调函数被调用。
  */
-void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef* hcan) {}
+void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef* hcan) {
+   cat = 1;
+}
 
 /**
  * @brief   当CAN的接收Fifo1已满时，此回调函数被调用。
  */
-void HAL_CAN_RxFifo1FullCallback(CAN_HandleTypeDef* hcan) {}
+void HAL_CAN_RxFifo1FullCallback(CAN_HandleTypeDef* hcan) {
+   cat = 1;
+}
 
 /********************************************************CAN错误处理****************************************************/
 /**

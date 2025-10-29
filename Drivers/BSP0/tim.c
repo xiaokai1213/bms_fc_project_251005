@@ -62,6 +62,8 @@ void TIM4_Init(void) {
    sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;    // 禁用主从模式同步
    HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig);  // 应用主模式同步配置
 
+   HAL_TIM_Base_Start_IT(&htim4);  // 以基础中断模式开启定时器4
+
    /*
    HAL_TIM_Base_Start_IT(&htim4);  // 以基础中断模式开启定时器4
    HAL_TIM_Base_Stop_IT(&htim4);   // 停止基础中断模式定时器4

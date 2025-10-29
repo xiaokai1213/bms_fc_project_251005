@@ -5,8 +5,7 @@
 
 extern CAN_HandleTypeDef hcan1;  // can外设初始化句柄
 
-void CAN_Init(void);          // can外设初始化函数
-void CAN_ConfigFilter(void);  // 配置过滤器
+void CAN_Init(void);  // can外设初始化函数
 
 #endif  // _CAN_H
 

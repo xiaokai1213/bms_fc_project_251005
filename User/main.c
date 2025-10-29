@@ -30,7 +30,7 @@ int main() {
    bms_sm_handle_event(event_power_on);  // 上电事件
    while (1) {
       bms_state_machine_dispatch();  // 执行状态机调度函数
-      delay_ms(2);                   // 延时2ms限制状态机执行频率
+      delay_ms(500);                 // 延时2ms限制状态机执行频率
    }
 }
 
