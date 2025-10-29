@@ -1,11 +1,7 @@
 #include "standby.h"
 #include "callback.h"
 
-#include "can_task.h"
-
 #include "can.h"
-
-volatile uint8_t cat = 0;
 
 /**
  * @brief   待机执行函数
@@ -23,19 +19,14 @@ void standby_execute(void) {
       // return;                                   // 结束执行函数
    }
 
-   printf("dd\n");
+   CAN_RxHeaderTypeDef rx_header;
+   uint8_t rx_data[8];
 
-   if (cat == 1) {
-      printf("main2222");
-      cat = 0;
+   if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &rx_header, rx_data) == HAL_OK) {
+      if ((rx_header.IDE == CAN_ID_EXT) && (rx_header.ExtId == 0x12345678)) {
+         printf("main2222");
+      }
    }
-
-   int n = 0;
-   n = (int)HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0);
-   printf("%d--", n);
-
-   n = (int)HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO1);
-   printf("%d\n", n);
 
    bms_sm_handle_event(event_enter_standby);  // 无事件触发重新进入待机
 }
