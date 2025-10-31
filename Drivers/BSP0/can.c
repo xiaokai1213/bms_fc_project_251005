@@ -26,11 +26,11 @@ void CAN_Init(void) {
    // 配置过滤器0:32位列表模式,关联至FIFO0
    canFilter.FilterBank = 0;                           // 滤波器编号，取值范围 0 ~ N（最多 28 个，取决于芯片）
    canFilter.FilterMode = CAN_FILTERMODE_IDMASK;       // 模式，掩码模式（IDMASK）或列表模式（IDLIST）
-   canFilter.FilterScale = CAN_FILTERSCALE_16BIT;      // 尺寸，16位模式 or 32位模式
+   canFilter.FilterScale = CAN_FILTERSCALE_32BIT;      // 尺寸，16位模式 or 32位模式
    canFilter.FilterFIFOAssignment = CAN_FILTER_FIFO0;  // 分配到哪个 FIFO，取FIFO0 或 FIFO1
    canFilter.FilterActivation = ENABLE;                // 启用或禁用该滤波器
-   uint32_t ExtID1 = 0x000000;                         // 设置ID1白名单
-   uint32_t ExtID2 = 0x000000;                         // 设置ID2白名单
+   uint32_t ExtID1 = 0x0000;                           // 设置ID1白名单
+   uint32_t ExtID2 = 0x0000;                           // 设置ID2白名单
    canFilter.FilterIdHigh = ExtID1;                    // 取高16位
    canFilter.FilterIdLow = ExtID1;                     // 取低16位
    canFilter.FilterMaskIdHigh = ExtID2;                // 取高16位

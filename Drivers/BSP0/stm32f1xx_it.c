@@ -3,8 +3,6 @@
 #include "spi.h"
 #include "tim.h"
 
-#include "standby.h"
-
 // volatile避免编译器优化(在中断服务程序中使用)
 
 void NVIC_Init(void) {
@@ -50,18 +48,16 @@ void USB_HP_CAN1_TX_IRQHandler(void) {
 }
 
 /**
- * @brief can邮箱0中断函数入口
+ * @brief can接收邮箱0中断函数入口
  */
 void USB_LP_CAN1_RX0_IRQHandler(void) {
-   cat == 1;
    HAL_CAN_IRQHandler(&hcan1);  // can中断处理公共函数
 }
 
 /**
- * @brief can邮箱1中断函数入口
+ * @brief can接收邮箱1中断函数入口
  */
 void CAN1_RX1_IRQHandler(void) {
-   cat == 1;
    HAL_CAN_IRQHandler(&hcan1);  // can中断处理公共函数
 }
 
