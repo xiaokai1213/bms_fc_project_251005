@@ -18,7 +18,8 @@ void standby_execute(void) {
       task_temp_collect.flag = 0;               // 标志位置0
       // return;                                   // 结束执行函数
    }
-
+   uint32_t CAN_NOX = HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0);
+   printf("can_xx=%d\n", (int)CAN_NOX);
    CAN_RxHeaderTypeDef rx_header;
    uint8_t rx_data[8];
 
