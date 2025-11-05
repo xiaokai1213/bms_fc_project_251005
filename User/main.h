@@ -13,7 +13,7 @@
 // 状态枚举定义-列出bms从控所有可能状态
 typedef enum {
    state_init = 0,  // 初始化：外设初始化；ltc6804初始化
-   state_standby,   // 待机状态：进行自检和检查任务运行标志位
+   state_standby,   // 待机状态：自检、检查运行标志位、检查芯片状态\等待主控命令
    state_fault,     // 故障状态
    state_runing,    // 运行状态
    state_idle,      // 空闲状态
@@ -33,9 +33,28 @@ typedef enum {
    e
 } bms_event_t;
 
-// 全局枚举声明
-extern bms_state_t bms_state;      // bms当前主状态枚举定义
-extern bms_event_t event_trigger;  // 事件戳
+// 全局标志位结构体，标志位统一管理
+typedef struct {
+   uint8_t flag_fault;
+   uint8_t flag_runing;
+} bms_flag_t;
+
+// 全局时钟，1ms计时一次，挂载在系统滴答定时器上
+typedef struct {
+   uint64_t time_now;
+   uint64_t time_new;
+   uint64_t time_old;
+} bms_time_t;
+
+// 全局统一管理结构体，包含状态、事件、标志、时间
+typedef struct {
+   bms_state_t stat;
+   bms_event_t event;
+   bms_flag_t flag;
+   bms_time_t time;
+} bms_t;
+
+extern bms_t bms;
 
 // 函数声明
 void bms_state_machine_dispatch(void);        // 状态机调度函数

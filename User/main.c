@@ -19,9 +19,8 @@
 #include "runing.h"
 #include "standby.h"
 
-// 全局状态机实例
-bms_state_t bms_state;      // bms状态
-bms_event_t event_trigger;  // 事件戳
+// 全局结构体
+bms_t bms;
 
 // 主函数
 int main() {
@@ -38,7 +37,7 @@ int main() {
  * @brief   状态机调度函数，在主函数中循环调用
  */
 void bms_state_machine_dispatch(void) {
-   switch (bms_state) {   // 输入当前状态
+   switch (bms.stat) {    // 输入当前状态
       case state_init:    // 初始化状态
          init_execute();  // 初始化执行函数
          break;
@@ -68,27 +67,23 @@ void bms_state_machine_dispatch(void) {
  */
 void bms_sm_handle_event(bms_event_t event) {
    switch (event) {
-      case event_power_on:                // 上电事件
-         event_trigger = event_power_on;  // 事件戳
-         bms_state = state_init;          // bms状态变为初始化状态
+      case event_power_on:  // 上电事件
+         //
          break;
 
-      case event_enter_standby:                // 进入待机事件
-         event_trigger = event_enter_standby;  // 事件戳
-         bms_state = state_standby;            // bms状态变为待机状态
+      case event_enter_standby:  // 进入待机事件
+         //
          break;
 
       case event_self_test:  // 自检事件分支
          break;
 
-      case event_voltage_collect:                // 电压采集事件分支
-         event_trigger = event_voltage_collect;  // 事件戳
-         bms_state = state_runing;               // 进入运行状态执行对应任务
+      case event_voltage_collect:  // 电压采集事件分支
+         //
          break;
 
-      case event_temp_collect:                // 温度采集事件分支
-         event_trigger = event_temp_collect;  // 事件戳
-         bms_state = state_runing;            // 进入运行状态执行对应任务
+      case event_temp_collect:  // 温度采集事件分支
+                                //
          break;
 
       case event_voltage_data_send:  // 电压数据发送事件分支
