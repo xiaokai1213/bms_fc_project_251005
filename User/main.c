@@ -17,10 +17,9 @@
 // Middlewares头文件
 #include "init.h"
 #include "runing.h"
-#include "standby.h"
 
 // 全局结构体
-bms_t bms;
+volatile bms_t bms;
 
 // 主函数
 int main() {
@@ -41,22 +40,14 @@ void bms_state_machine_dispatch(void) {
       case state_init:    // 初始化状态
          init_execute();  // 初始化执行函数
          break;
-
-      case state_standby:    // 待机状态
-         standby_execute();  // 待机执行函数
-         break;
-
       case state_runing:    // 运行状态
          runing_execute();  // 运行执行函数
          break;
-
       case state_fault:  // 故障状态
-         break;
 
-      case state_idle:  // 空闲状态
          break;
+      default:  // 默认分支
 
-      default:
          break;
    }
 }
@@ -68,34 +59,16 @@ void bms_state_machine_dispatch(void) {
 void bms_sm_handle_event(bms_event_t event) {
    switch (event) {
       case event_power_on:  // 上电事件
-         //
+         bms.stat = state_init;
          break;
-
-      case event_enter_standby:  // 进入待机事件
-         //
+      case event_enter_runing:  // 进入运行状态
+         bms.stat = state_runing;
          break;
+      case event_self_check:  // 自检事件分支
 
-      case event_self_test:  // 自检事件分支
          break;
-
-      case event_voltage_collect:  // 电压采集事件分支
-         //
-         break;
-
-      case event_temp_collect:  // 温度采集事件分支
-                                //
-         break;
-
-      case event_voltage_data_send:  // 电压数据发送事件分支
-         break;
-
-      case event_temp_data_send:  // 温度数据发送事件分支
-         break;
-
-      case event_data_send_complete:  // 数据发送完成事件分支
-         break;
-
       default:  // 默认分支
+
          break;
    }
 }

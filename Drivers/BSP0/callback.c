@@ -38,14 +38,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
          task_10ms.flag = 1;     // 标志位置1
       }
 
-      // 更新100ms温度采集任务调度器
+      // 更新100ms任务调度器
       task_100ms.counter++;
       if (task_100ms.counter >= task_100ms.period) {
          task_100ms.counter = 0;  // 重置计数器
          task_100ms.flag = 1;     // 标志位置1
       }
 
-      // 更新100ms电压采集任务调度器
+      // 更新500ms任务调度器
       task_500ms.counter++;
       if (task_500ms.counter >= task_500ms.period) {
          task_500ms.counter = 0;  // 重置计数器
