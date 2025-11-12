@@ -20,17 +20,53 @@
 
 // 全局结构体
 volatile bms_t bms;
+bms_flag_t bms_flag;
 
 // 主函数
 int main() {
-   HAL_Init();                           // HAL库初始化
-   Stm32_Clock_Init();                   // 时钟初始化
-   bms_sm_handle_event(event_power_on);  // 上电事件
+   HAL_Init();             // HAL库初始化
+   Stm32_Clock_Init();     // 时钟初始化
+   uart_init(115200);      // 串口1初始化，中断收发，支持打印函数
+   LED_RELAY_GPIO_Init();  // LED与继电器初始化
+   TIM2_Init();            // 定时器2初始化（延时定时器）
+   TIM4_Init();            // 定时器4初始化（后台定时器）
+   SPI1_Init();            // spi1初始化
+   CAN_Init();             // can外设初始化
+   NVIC_Init();            // 中断初始化；中断统一管理
+   // ltc6804初始化
+   LTC6804_init();
+
    while (1) {
-      bms_state_machine_dispatch();  // 执行状态机调度函数
-      delay_ms(500);                 // 延时2ms限制状态机执行频率
+      if (bms_flag.collect_temperature_flag == 1) {
+      }
    }
 }
+
+/*
+伪状态机代码
+typedef enum { STATE_A, STATE_B, STATE_C } State_t;
+
+State_t current_state = STATE_A;
+
+void state_machine_run(Event_t event) {
+   switch (current_state) {
+      case STATE_A:
+         if (event == EVENT_X) {
+            // 执行动作
+            current_state = STATE_B;
+         }
+         break;
+      case STATE_B:
+         if (event == EVENT_Y) {
+            current_state = STATE_C;
+         }
+         break;
+      case STATE_C:
+         // 处理状态C的事件
+         break;
+   }
+}
+*/
 
 /**
  * @brief   状态机调度函数，在主函数中循环调用

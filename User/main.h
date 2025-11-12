@@ -10,6 +10,15 @@
 #define max_cell_voltage 42000  // 最大值不超过65535
 #define min_cell_voltage 32000  // 最小值不小于1
 
+typedef struct {
+   uint8_t collect_voltage_flag;      // 采集电压
+   uint8_t collect_temperature_flag;  // 采集温度
+   uint8_t send_voltage_data_flag;    // 发送电压数据标志位
+   uint8_t pec_fault;                 // PEC校验故障
+} bms_flag_t;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // 状态枚举定义-列出bms从控所有可能状态
 typedef enum {
    state_init = 0,    // 初始化：外设初始化；ltc6804初始化
@@ -30,7 +39,7 @@ typedef enum {
 // 全局标志位结构体，标志位统一管理
 typedef struct {
    uint8_t flag_fault;  // 故障标志位
-} bms_flag_t;
+} bms_flag_tt;
 
 // 全局时钟，1ms计时一次，挂载在系统滴答定时器上
 typedef struct {
