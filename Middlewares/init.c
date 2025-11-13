@@ -7,8 +7,9 @@
 #include "tim.h"
 #include "usart.h"
 
-void init_execute(void) {
-   // 外设初始化
+void init() {
+   HAL_Init();             // HAL库初始化
+   Stm32_Clock_Init();     // 时钟初始化
    uart_init(115200);      // 串口1初始化，中断收发，支持打印函数
    LED_RELAY_GPIO_Init();  // LED与继电器初始化
    TIM2_Init();            // 定时器2初始化（延时定时器）
@@ -18,6 +19,4 @@ void init_execute(void) {
    NVIC_Init();            // 中断初始化；中断统一管理
    // ltc6804初始化
    LTC6804_init();
-
-   bms_sm_handle_event(event_enter_runing);  // 进入运行状态
 }

@@ -18,27 +18,59 @@
 #include "init.h"
 #include "runing.h"
 
-// 全局结构体
-volatile bms_t bms;
-bms_flag_t bms_flag;
+// 全局标志位
+volatile flag_handle_t flag = {0};  // 运行状态标志位管理,初始化均为0
 
 // 主函数
 int main() {
-   HAL_Init();             // HAL库初始化
-   Stm32_Clock_Init();     // 时钟初始化
-   uart_init(115200);      // 串口1初始化，中断收发，支持打印函数
-   LED_RELAY_GPIO_Init();  // LED与继电器初始化
-   TIM2_Init();            // 定时器2初始化（延时定时器）
-   TIM4_Init();            // 定时器4初始化（后台定时器）
-   SPI1_Init();            // spi1初始化
-   CAN_Init();             // can外设初始化
-   NVIC_Init();            // 中断初始化；中断统一管理
-   // ltc6804初始化
-   LTC6804_init();
-
+   init();  // 初始化
    while (1) {
-      if (bms_flag.collect_temperature_flag == 1) {
+      // 检查是否有发送任务
+      // 检查是否有周期性任务
+
+      Task_Update();  // 任务更新
+
+      // 电压采集任务
+      if (flag.collect_voltage_flag == 1) {
+         uint8_t pec_error = 0;                                                             // 校验返回值
+         for (uint8_t pec_error_counter = 0; pec_error_counter < 5; pec_error_counter++) {  // 循环5次获取电压并返回校验情况
+            pec_error = ltc6804_Get_Voltage();                                              // 获取电压并返回校验情况
+            if (pec_error == 0) {                                                           // 检查校验值
+               break;                                                                       // 若返回正确则跳出循环
+            }
+         }
+         if (pec_error == 1) {                // 5次获取电压均失败
+            flag.pec_fault = 1;               // pec故障标志位置1
+            flag.collect_voltage_flag = 1;    // 采集电压标志依旧为1
+         } else {                             // 电压获取成功,pec_error=0
+            flag.send_voltage_data_flag = 1;  // 发送电压数据位置1
+            flag.collect_voltage_flag = 0;    // 采集电压标志位置0
+         }
       }
+
+      // 电压数据发送任务
+      if (flag.send_voltage_data_flag == 1) {
+         // 获取can发送邮箱情况
+         uint32_t can_tx_mailbox_num = 0;
+         can_tx_mailbox_num = HAL_CAN_GetTxMailboxesFreeLevel(&hcan1);  // 获取空闲发送邮箱数量
+         if (can_tx_mailbox_num == 0) {                                 // 空邮箱数量为0
+            flag.send_voltage_data_flag == 1;                           // 无法发送，下一轮继续发送
+         } else {
+         }
+         flag.send_voltage_data_flag = 0;
+      }
+   }
+}
+
+/**
+ * @brief   任务更新
+ */
+void Task_Update(void) {
+   // 500ms任务更新
+   if (task_500ms.flag == 1) {
+      flag.collect_voltage_flag = 1;      // 置采集电压检测位为1
+      flag.collect_temperature_flag = 1;  // 置采集温度检测位为1
+      task_500ms.flag = 0;
    }
 }
 
@@ -67,44 +99,3 @@ void state_machine_run(Event_t event) {
    }
 }
 */
-
-/**
- * @brief   状态机调度函数，在主函数中循环调用
- */
-void bms_state_machine_dispatch(void) {
-   switch (bms.stat) {    // 输入当前状态
-      case state_init:    // 初始化状态
-         init_execute();  // 初始化执行函数
-         break;
-      case state_runing:    // 运行状态
-         runing_execute();  // 运行执行函数
-         break;
-      case state_fault:  // 故障状态
-
-         break;
-      default:  // 默认分支
-
-         break;
-   }
-}
-
-/**
- * @brief   状态机事件处理函数，状态机核心代码，根据当前事件决定状态转换
- * @param   event：要处理的事件
- */
-void bms_sm_handle_event(bms_event_t event) {
-   switch (event) {
-      case event_power_on:  // 上电事件
-         bms.stat = state_init;
-         break;
-      case event_enter_runing:  // 进入运行状态
-         bms.stat = state_runing;
-         break;
-      case event_self_check:  // 自检事件分支
-
-         break;
-      default:  // 默认分支
-
-         break;
-   }
-}

@@ -3,6 +3,6 @@
 
 #include "main.h"
 
-void init_execute(void);  // 初始化执行函数
+void init();
 
 #endif  // _INIT_H
