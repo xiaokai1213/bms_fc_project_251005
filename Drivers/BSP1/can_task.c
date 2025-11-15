@@ -2,6 +2,8 @@
 #include "can.h"
 #include "ltc6804_1_task.h"
 
+// 建立电压发送缓冲区
+
 /**
  * @brief 扩展can发送八位数据帧
  * @param extid:扩展标识符(29位)，0x1FFFFFFF是最大的29位数

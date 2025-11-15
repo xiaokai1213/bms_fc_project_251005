@@ -4,11 +4,11 @@
 #include "spi.h"
 #include "tim.h"
 
-volatile uint32_t delaytime = 0;                     // 延时器计数器（全局变量）
-volatile task_scheduler_t task_5ms = {0, 5, 0};      // 5ms周期任务调度器定义
-volatile task_scheduler_t task_10ms = {0, 10, 0};    // 10ms周期任务调度器定义
-volatile task_scheduler_t task_100ms = {0, 500, 0};  // 100ms周期任务调度器定义
-volatile task_scheduler_t task_500ms = {0, 500, 0};  // 500ms周期任务调度器定义
+volatile uint32_t delaytime = 0;                                  // 延时器计数器（全局变量）
+volatile task_scheduler_t task_collect_voltage = {0, 200, 0};     // 采集电压周期任务调度器定义
+volatile task_scheduler_t task_collect_temperature = {0, 10, 0};  // 采集温度周期任务调度器定义
+volatile task_scheduler_t task_100ms = {0, 500, 0};               // 100ms周期任务调度器定义
+volatile task_scheduler_t task_500ms = {0, 500, 0};               // 500ms周期任务调度器定义
 
 /********************************************************TIM定时器中断****************************************************/
 /**
@@ -24,18 +24,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
 
    if (htim->Instance == TIM4) {  // 定时器4，后台定时器,1ms触发一次
 
-      // 更新5ms任务调度器
-      task_5ms.counter++;
-      if (task_5ms.counter >= task_5ms.period) {
-         task_5ms.counter = 0;  // 重置计数器
-         task_5ms.flag = 1;     // 标志位置1
+      // 更新采集电压任务调度器
+      task_collect_voltage.counter++;
+      if (task_collect_voltage.counter >= task_collect_voltage.period) {
+         task_collect_voltage.counter = 0;  // 重置计数器
+         task_collect_voltage.flag = 1;     // 标志位置1
       }
 
-      // 更新10ms任务调度器
-      task_10ms.counter++;
-      if (task_10ms.counter >= task_10ms.period) {
-         task_10ms.counter = 0;  // 重置计数器
-         task_10ms.flag = 1;     // 标志位置1
+      // 更新采集温度任务调度器
+      task_collect_temperature.counter++;
+      if (task_collect_temperature.counter >= task_collect_temperature.period) {
+         task_collect_temperature.counter = 0;  // 重置计数器
+         task_collect_temperature.flag = 1;     // 标志位置1
       }
 
       // 更新100ms任务调度器

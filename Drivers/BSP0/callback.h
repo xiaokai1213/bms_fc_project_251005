@@ -10,11 +10,11 @@ typedef struct {
    uint8_t flag;      // 标志位
 } task_scheduler_t;
 
-extern volatile uint32_t delaytime;                // 延时器全局变量
-extern volatile task_scheduler_t task_5ms;         // 5ms周期任务调度器定义
-volatile task_scheduler_t task_10ms = {0, 10, 0};  // 10ms周期任务调度器定义
-extern volatile task_scheduler_t task_100ms;       // 10ms周期任务调度器定义
-extern volatile task_scheduler_t task_500ms;       // 100ms周期任务调度器定义
+extern volatile uint32_t delaytime;                         // 延时器全局变量
+extern volatile task_scheduler_t task_collect_voltage;      // 采集电压周期任务调度器定义
+extern volatile task_scheduler_t task_collect_temperature;  // 采集温度周期任务调度器定义
+extern volatile task_scheduler_t task_100ms;                // 10ms周期任务调度器定义
+extern volatile task_scheduler_t task_500ms;                // 100ms周期任务调度器定义
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim);  // hal库定时器统一回调函数
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef* hspi);         // spi接收回调函数
