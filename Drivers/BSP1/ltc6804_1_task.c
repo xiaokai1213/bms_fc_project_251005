@@ -204,17 +204,3 @@ uint8_t ltc6804_Open_wire_inspection(void) {
    printf("\r\n");
    return wire_error2;
 }
-
-// 电池电压拆分can高低位数据示例
-/*
-uint8_t cv[8];
-      cv[0] = (uint8_t)(cv_h_ltc6804[0].C01V >> 8);
-      cv[1] = (uint8_t)cv_h_ltc6804[0].C01V;
-      cv[2] = (uint8_t)(cv_h_ltc6804[0].C02V >> 8);
-      cv[3] = (uint8_t)cv_h_ltc6804[0].C02V;
-      cv[4] = (uint8_t)(cv_h_ltc6804[0].C03V >> 8);
-      cv[5] = (uint8_t)cv_h_ltc6804[0].C03V;
-      cv[6] = (uint8_t)(cv_h_ltc6804[0].C04V >> 8);
-      cv[7] = (uint8_t)cv_h_ltc6804[0].C04V;
-      printf("\r\n");
-*/

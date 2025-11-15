@@ -12,6 +12,7 @@
 #define max_cell_voltage 42000  // 最大值不超过65535
 #define min_cell_voltage 32000  // 最小值不小于1
 
+// 状态枚举
 typedef enum {
    STATE_INIT = 0,                  // 初始化状态;外设初始化
    STATE_INIT_LTC6804,              // 初始化LTC6804
@@ -33,6 +34,25 @@ typedef enum {
    STATE_FAULT_HARDWARE,            // 硬件故障
    STATE
 } BMS_State_t;
+
+// 电压数据管理
+typedef struct {
+   uint16_t voltage_data;         // 电压值
+   uint8_t voltage_anomaly : 1;   // 电压异常位
+   uint8_t voltage_can_send : 1;  // 电压发送位
+} BATTERY_PACK_DATA_t;
+extern BATTERY_PACK_DATA_t bat_pack_data[cell_num];  // 电池组电压数据管理
+
+// 全局标志位管理
+typedef struct {
+   uint8_t voltage_tx_flag : 1;            // 电压发送挂起
+   uint8_t voltage_can_tx_PF_10_flag : 1;  // 电压发送报文10挂起标志位
+   uint8_t voltage_can_tx_PF_11_flag : 1;  // 电压发送报文10挂起标志位
+   uint8_t voltage_can_tx_PF_12_flag : 1;  // 电压发送报文10挂起标志位
+   uint8_t voltage_can_tx_PF_13_flag : 1;  // 电压发送报文10挂起标志位
+   uint8_t voltage_can_tx_PF_14_flag : 1;  // 电压发送报文10挂起标志位
+} FLAG_t;
+extern FLAG_t flag;  // 全局标志位
 
 // 函数声明
 void state_machine_run(void);

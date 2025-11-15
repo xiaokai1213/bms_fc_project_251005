@@ -18,7 +18,9 @@
 #include "data_processing.h"
 
 // 全局变量
-BMS_State_t state = STATE_INIT;  // 初始化状态
+BMS_State_t state = STATE_INIT;                     // 初始化状态
+BATTERY_PACK_DATA_t bat_pack_data[cell_num] = {0};  // 电池组电压数据
+FLAG_t flag;                                        // 全局标志位
 
 // 主函数
 int main() {

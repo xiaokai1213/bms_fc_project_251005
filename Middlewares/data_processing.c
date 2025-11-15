@@ -8,37 +8,39 @@
  * 1:电压异常
  */
 uint8_t process_voltage_data(void) {
-   uint16_t* voltages[cell_num];  // 指针数组,存储20个电芯电压数据地址,方便后续操作
-   voltages[0] = &cv_h_ltc6804[0].C01V;
-   voltages[1] = &cv_h_ltc6804[0].C02V;
-   voltages[2] = &cv_h_ltc6804[0].C03V;
-   voltages[3] = &cv_h_ltc6804[0].C04V;
-   voltages[4] = &cv_h_ltc6804[0].C05V;
+   uint8_t error = 0;
+   bat_pack_data[0].voltage_data = cv_h_ltc6804[0].C01V;
+   bat_pack_data[1].voltage_data = cv_h_ltc6804[0].C02V;
+   bat_pack_data[2].voltage_data = cv_h_ltc6804[0].C03V;
+   bat_pack_data[3].voltage_data = cv_h_ltc6804[0].C04V;
+   bat_pack_data[4].voltage_data = cv_h_ltc6804[0].C05V;
 
-   voltages[5] = &cv_h_ltc6804[0].C07V;
-   voltages[6] = &cv_h_ltc6804[0].C08V;
-   voltages[7] = &cv_h_ltc6804[0].C09V;
-   voltages[8] = &cv_h_ltc6804[0].C10V;
-   voltages[9] = &cv_h_ltc6804[0].C11V;
+   bat_pack_data[5].voltage_data = cv_h_ltc6804[0].C07V;
+   bat_pack_data[6].voltage_data = cv_h_ltc6804[0].C08V;
+   bat_pack_data[7].voltage_data = cv_h_ltc6804[0].C09V;
+   bat_pack_data[8].voltage_data = cv_h_ltc6804[0].C10V;
+   bat_pack_data[9].voltage_data = cv_h_ltc6804[0].C11V;
 
-   voltages[10] = &cv_h_ltc6804[1].C01V;
-   voltages[11] = &cv_h_ltc6804[1].C02V;
-   voltages[12] = &cv_h_ltc6804[1].C03V;
-   voltages[13] = &cv_h_ltc6804[1].C04V;
-   voltages[14] = &cv_h_ltc6804[1].C05V;
+   bat_pack_data[10].voltage_data = cv_h_ltc6804[1].C01V;
+   bat_pack_data[11].voltage_data = cv_h_ltc6804[1].C02V;
+   bat_pack_data[12].voltage_data = cv_h_ltc6804[1].C03V;
+   bat_pack_data[13].voltage_data = cv_h_ltc6804[1].C04V;
+   bat_pack_data[14].voltage_data = cv_h_ltc6804[1].C05V;
 
-   voltages[15] = &cv_h_ltc6804[1].C07V;
-   voltages[16] = &cv_h_ltc6804[1].C08V;
-   voltages[17] = &cv_h_ltc6804[1].C09V;
-   voltages[18] = &cv_h_ltc6804[1].C10V;
-   voltages[19] = &cv_h_ltc6804[1].C11V;
+   bat_pack_data[15].voltage_data = cv_h_ltc6804[1].C07V;
+   bat_pack_data[16].voltage_data = cv_h_ltc6804[1].C08V;
+   bat_pack_data[17].voltage_data = cv_h_ltc6804[1].C09V;
+   bat_pack_data[18].voltage_data = cv_h_ltc6804[1].C10V;
+   bat_pack_data[19].voltage_data = cv_h_ltc6804[1].C11V;
 
-   for (int i = 0; i < cell_num; i++) {                                          // 轮询每个电芯电压
-      if (*voltages[i] > max_cell_voltage || *voltages[i] < min_cell_voltage) {  // 每个电压与阈值电压进行比较
-         return 1;                                                               // 有异常电压直接返回报警1,并退出函数
+   for (int i = 0; i < cell_num; i++) {                                                                            // 轮询每个电芯电压
+      if (bat_pack_data[i].voltage_data > max_cell_voltage || bat_pack_data[i].voltage_data < min_cell_voltage) {  // 每个电压与阈值电压进行比较
+         bat_pack_data[i].voltage_anomaly = 1;                                                                     // 有异常电压则标记
+         error = 1;                                                                                                // 有异常电压返回错误1
       }
+      bat_pack_data[i].voltage_can_send = 1;  // 每个电压数据标记发送
    }
-   return 0;  // 无异常电压返回0
+   return error;  // 无异常电压返回0
 }
 
 /*

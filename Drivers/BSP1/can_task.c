@@ -2,7 +2,26 @@
 #include "can.h"
 #include "ltc6804_1_task.h"
 
+// 电池电压拆分can高低位数据示例
+/*
+uint8_t cv[8];
+      cv[0] = (uint8_t)(cv_h_ltc6804[0].C01V >> 8);
+      cv[1] = (uint8_t)cv_h_ltc6804[0].C01V;
+      cv[2] = (uint8_t)(cv_h_ltc6804[0].C02V >> 8);
+      cv[3] = (uint8_t)cv_h_ltc6804[0].C02V;
+      cv[4] = (uint8_t)(cv_h_ltc6804[0].C03V >> 8);
+      cv[5] = (uint8_t)cv_h_ltc6804[0].C03V;
+      cv[6] = (uint8_t)(cv_h_ltc6804[0].C04V >> 8);
+      cv[7] = (uint8_t)cv_h_ltc6804[0].C04V;
+      printf("\r\n");
+*/
+
 // 建立电压发送缓冲区
+
+// CAN全局管理
+CAN_TX_t can_tx_flag = {0};  // 发送相关标志位
+
+uint8_t can_tx_voltage_data(uint8_t) {}
 
 /**
  * @brief 扩展can发送八位数据帧
