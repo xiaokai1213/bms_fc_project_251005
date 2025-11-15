@@ -1,10 +1,10 @@
 #include "callback.h"
 #include "can.h"
 #include "delay.h"
+#include "main.h"
 #include "spi.h"
 #include "tim.h"
 
-volatile uint32_t delaytime = 0;                                  // 延时器计数器（全局变量）
 volatile task_scheduler_t task_collect_voltage = {0, 200, 0};     // 采集电压周期任务调度器定义
 volatile task_scheduler_t task_collect_temperature = {0, 10, 0};  // 采集温度周期任务调度器定义
 volatile task_scheduler_t task_100ms = {0, 500, 0};               // 100ms周期任务调度器定义
@@ -79,17 +79,23 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef* hspi) {
 /**
  * @brief   当CAN的发送邮箱0（Tx Mailbox 0）完成一次发送时，此回调函数被调用。
  */
-void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef* hcan) {}
+void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef* hcan) {
+   flag.can_send_busy = 0;  // can发送邮箱状态置0
+}
 
 /**
  * @brief   当CAN的发送邮箱1（Tx Mailbox 1）完成一次发送时，此回调函数被调用。
  */
-void HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef* hcan) {}
+void HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef* hcan) {
+   flag.can_send_busy = 0;  // can发送邮箱状态置0
+}
 
 /**
  * @brief   当CAN的发送邮箱2（Tx Mailbox 2）完成一次发送时，此回调函数被调用。
  */
-void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef* hcan) {}
+void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef* hcan) {
+   flag.can_send_busy = 0;  // can发送邮箱状态置0
+}
 
 /********************************************************CAN中断发送被中止****************************************************/
 /**

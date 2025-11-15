@@ -52,7 +52,7 @@ void CAN_Init(void) {
    HAL_CAN_ConfigFilter(&hcan1, &canFilter);  // 配置过滤器
 
    // 启用所需的中断
-   // HAL_CAN_ActivateNotification(&hcan1, CAN_IT_TX_MAILBOX_EMPTY);      // 发送邮箱空中断（当发送邮箱为空时，即发送完成）
+   HAL_CAN_ActivateNotification(&hcan1, CAN_IT_TX_MAILBOX_EMPTY);  // 发送邮箱空中断（当发送邮箱为空时，即发送完成）
    // HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);  // FIFO0消息挂起中断（FIFO0中有新消息）
    // HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_FULL);         // FIFO0满中断
    // HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_OVERRUN);      // FIFO0溢出中断

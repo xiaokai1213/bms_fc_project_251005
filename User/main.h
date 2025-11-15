@@ -45,14 +45,16 @@ extern BATTERY_PACK_DATA_t bat_pack_data[cell_num];  // 电池组电压数据管
 
 // 全局标志位管理
 typedef struct {
-   uint8_t voltage_tx_flag : 1;            // 电压发送挂起
-   uint8_t voltage_can_tx_PF_10_flag : 1;  // 电压发送报文10挂起标志位
-   uint8_t voltage_can_tx_PF_11_flag : 1;  // 电压发送报文10挂起标志位
-   uint8_t voltage_can_tx_PF_12_flag : 1;  // 电压发送报文10挂起标志位
-   uint8_t voltage_can_tx_PF_13_flag : 1;  // 电压发送报文10挂起标志位
-   uint8_t voltage_can_tx_PF_14_flag : 1;  // 电压发送报文10挂起标志位
+   uint8_t can_send_busy : 1;                    // CAN发送邮箱忙指示,0有空邮箱,1无空邮箱
+   uint8_t voltage_can_tx_PF_10_ready_flag : 1;  // 电压发送报文10挂起标志位
+   uint8_t voltage_can_tx_PF_11_ready_flag : 1;  // 电压发送报文10挂起标志位
+   uint8_t voltage_can_tx_PF_12_ready_flag : 1;  // 电压发送报文10挂起标志位
+   uint8_t voltage_can_tx_PF_13_ready_flag : 1;  // 电压发送报文10挂起标志位
+   uint8_t voltage_can_tx_PF_14_ready_flag : 1;  // 电压发送报文10挂起标志位
 } FLAG_t;
-extern FLAG_t flag;  // 全局标志位
+extern volatile FLAG_t flag;  // 全局标志位
+
+extern uint8_t bms_address;
 
 // 函数声明
 void state_machine_run(void);

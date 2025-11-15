@@ -10,7 +10,6 @@ typedef struct {
    uint8_t flag;      // 标志位
 } task_scheduler_t;
 
-extern volatile uint32_t delaytime;                         // 延时器全局变量
 extern volatile task_scheduler_t task_collect_voltage;      // 采集电压周期任务调度器定义
 extern volatile task_scheduler_t task_collect_temperature;  // 采集温度周期任务调度器定义
 extern volatile task_scheduler_t task_100ms;                // 10ms周期任务调度器定义

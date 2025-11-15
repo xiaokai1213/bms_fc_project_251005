@@ -33,4 +33,42 @@ void LED_RELAY_GPIO_Init(void) {
    RELAY(1);
    LEDR(0);
    LEDG(0);
+
+   // 配置地址输入GPIO口
+   GPIO_InitStruct.Pin = A0_Pin | A1_Pin | A2_Pin | A3_Pin;
+   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+   GPIO_InitStruct.Pull = GPIO_PULLUP;
+   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+}
+
+/**
+ * @brief   读取地址函数
+ * @return  uint8_t address:地址,后四位有效
+ */
+uint8_t read_address_init(void) {
+   uint8_t address = 0;  // 定义地址
+                         // 读取第一个GPIO引脚状态
+   if (HAL_GPIO_ReadPin(A0_GPIO_Port, A0_Pin) == GPIO_PIN_SET) {
+      address |= 0x01;  // 设置bit0
+   }
+
+   // 读取第二个GPIO引脚状态
+   if (HAL_GPIO_ReadPin(A1_GPIO_Port, A1_Pin) == GPIO_PIN_SET) {
+      address |= 0x02;  // 设置bit1
+   }
+
+   // 读取第三个GPIO引脚状态
+   if (HAL_GPIO_ReadPin(A2_GPIO_Port, A2_Pin) == GPIO_PIN_SET) {
+      address |= 0x04;  // 设置bit2
+   }
+
+   // 读取第四个GPIO引脚状态
+   if (HAL_GPIO_ReadPin(A3_GPIO_Port, A3_Pin) == GPIO_PIN_SET) {
+      address |= 0x08;  // 设置bit3
+   }
+
+   // 确保只保留低4位
+   address &= 0x0F;
+
+   return address;  // 返回地址数据
 }

@@ -17,11 +17,31 @@ uint8_t cv[8];
 */
 
 // 建立电压发送缓冲区
+/**
+ * @brief   can报文ID初始化,根据地址设定,初始化can报文id
+ */
 
-// CAN全局管理
-CAN_TX_t can_tx_flag = {0};  // 发送相关标志位
-
-uint8_t can_tx_voltage_data(uint8_t) {}
+/**
+ * @brief   通过can通讯发送电压数据
+ * @return  uint8_t:发送状态
+ * 0:发送
+ */
+uint8_t can_tx_voltage_data(void) {
+   if (flag.voltage_can_tx_PF_10_ready_flag == 1) {  // 检查电压发送报文PF10状态
+      uint32_t id = 0;
+      id = 0x1810F400;
+      if (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 0) {  // 发送邮箱有空位
+      }
+   }
+   if (flag.voltage_can_tx_PF_11_ready_flag == 1) {  // 检查电压发送报文PF11状态
+   }
+   if (flag.voltage_can_tx_PF_12_ready_flag == 1) {  // 检查电压发送报文PF12状态
+   }
+   if (flag.voltage_can_tx_PF_13_ready_flag == 1) {  // 检查电压发送报文PF13状态
+   }
+   if (flag.voltage_can_tx_PF_14_ready_flag == 1) {  // 检查电压发送报文PF14状态
+   }
+}
 
 /**
  * @brief 扩展can发送八位数据帧

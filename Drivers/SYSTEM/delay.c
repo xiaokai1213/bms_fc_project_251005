@@ -2,6 +2,8 @@
 #include "callback.h"
 #include "tim.h"
 
+volatile uint32_t delaytime = 0;  // 延时器计数器（全局变量）
+
 // 毫秒延时，最大65535ms
 void delay_ms(uint16_t ntime) {
    delaytime = ntime;              // 将延时值赋予定时器全局变量
