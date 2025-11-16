@@ -5,12 +5,20 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "stm32f1xx_hal.h"
+
+// can发送数据报文设置
+#define voltage_01_to_04_can_tx_id (uint32_t)0x18105000
+#define voltage_05_to_08_can_tx_id (uint32_t)0x18115000
+#define voltage_09_to_12_can_tx_id (uint32_t)0x18125000
+#define voltage_13_to_16_can_tx_id (uint32_t)0x18135000
+#define voltage_17_to_20_can_tx_id (uint32_t)0x18145000
+
 // 电池模组参数
-#define cell_num         20  // 总共20个电芯
+#define cell_num                   20  // 总共20个电芯
 
 // 设置最大电压为4.2V则数值为42000
-#define max_cell_voltage 42000  // 最大值不超过65535
-#define min_cell_voltage 32000  // 最小值不小于1
+#define max_cell_voltage           42000  // 最大值不超过65535
+#define min_cell_voltage           32000  // 最小值不小于1
 
 // 状态枚举
 typedef enum {
@@ -35,14 +43,6 @@ typedef enum {
    STATE
 } BMS_State_t;
 
-// 电压数据管理
-typedef struct {
-   uint16_t voltage_data;         // 电压值
-   uint8_t voltage_anomaly : 1;   // 电压异常位
-   uint8_t voltage_can_send : 1;  // 电压发送位
-} BATTERY_PACK_DATA_t;
-extern BATTERY_PACK_DATA_t bat_pack_data[cell_num];  // 电池组电压数据管理
-
 // 全局标志位管理
 typedef struct {
    uint8_t can_send_busy : 1;                    // CAN发送邮箱忙指示,0有空邮箱,1无空邮箱
@@ -53,8 +53,6 @@ typedef struct {
    uint8_t voltage_can_tx_PF_14_ready_flag : 1;  // 电压发送报文10挂起标志位
 } FLAG_t;
 extern volatile FLAG_t flag;  // 全局标志位
-
-extern uint8_t bms_address;
 
 // 函数声明
 void state_machine_run(void);

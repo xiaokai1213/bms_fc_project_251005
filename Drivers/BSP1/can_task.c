@@ -1,5 +1,6 @@
 #include "can_task.h"
 #include "can.h"
+#include "led_relay_gpio.h"
 #include "ltc6804_1_task.h"
 
 // 电池电压拆分can高低位数据示例
@@ -16,14 +17,6 @@ uint8_t cv[8];
       printf("\r\n");
 */
 
-// 建立电压发送缓冲区
-/**
- * @brief   can报文ID初始化,根据地址设定,初始化can报文id
- */
-void CAN_ID_init(void){
-   
-}
-
 /**
  * @brief   通过can通讯发送电压数据
  * @return  uint8_t:发送状态
@@ -31,10 +24,6 @@ void CAN_ID_init(void){
  */
 uint8_t can_tx_voltage_data(void) {
    if (flag.voltage_can_tx_PF_10_ready_flag == 1) {  // 检查电压发送报文PF10状态
-      uint32_t id = 0;
-      id = 0x1810F400;
-      if (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 0) {  // 发送邮箱有空位
-      }
    }
    if (flag.voltage_can_tx_PF_11_ready_flag == 1) {  // 检查电压发送报文PF11状态
    }
