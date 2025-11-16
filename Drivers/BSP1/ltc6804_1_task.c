@@ -1,10 +1,10 @@
 #include "ltc6804_1_task.h"
 #include "delay.h"
 
-volatile LTC6804_ConfigRegsTypeDef cfgr_h_ltc6804[total_ic];  // 配置寄存器全局句柄
-volatile LTC6804_StatusRegs stat_h_ltc6804[total_ic];         // 状态寄存器全局句柄
-volatile BatteryVoltageRegs cv_h_ltc6804[total_ic];           // 电池电压全局句柄
-volatile AuxVoltageRegs av_h_ltc6804[total_ic];               // 辅助电压全局句柄
+LTC6804_ConfigRegsTypeDef cfgr_h_ltc6804[total_ic];  // 配置寄存器全局句柄
+LTC6804_StatusRegs stat_h_ltc6804[total_ic];         // 状态寄存器全局句柄
+BatteryVoltageRegs cv_h_ltc6804[total_ic];           // 电池电压全局句柄
+AuxVoltageRegs av_h_ltc6804[total_ic];               // 辅助电压全局句柄
 
 /**
  * @brief   ltc6804初始化函数

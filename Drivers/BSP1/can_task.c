@@ -20,6 +20,9 @@ uint8_t cv[8];
 /**
  * @brief   can报文ID初始化,根据地址设定,初始化can报文id
  */
+void CAN_ID_init(void){
+   
+}
 
 /**
  * @brief   通过can通讯发送电压数据
