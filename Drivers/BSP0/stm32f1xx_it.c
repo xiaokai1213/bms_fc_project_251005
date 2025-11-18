@@ -16,9 +16,9 @@ void NVIC_Init(void) {
    // 设置CAN中断优先级 (最高)
    HAL_NVIC_SetPriority(USB_HP_CAN1_TX_IRQn, 1, 1);  // 抢占优先级0, 响应优先级0
    HAL_NVIC_EnableIRQ(USB_HP_CAN1_TX_IRQn);
-   HAL_NVIC_SetPriority(USB_LP_CAN1_RX0_IRQn, 0, 0);  // 抢占优先级0, 响应优先级0
+   HAL_NVIC_SetPriority(USB_LP_CAN1_RX0_IRQn, 0, 1);  // 抢占优先级0, 响应优先级0
    HAL_NVIC_EnableIRQ(USB_LP_CAN1_RX0_IRQn);
-   HAL_NVIC_SetPriority(CAN1_RX1_IRQn, 0, 0);  // 抢占优先级0, 响应优先级0
+   HAL_NVIC_SetPriority(CAN1_RX1_IRQn, 0, 1);  // 抢占优先级0, 响应优先级0
    HAL_NVIC_EnableIRQ(CAN1_RX1_IRQn);
 
    // 设置SPI中断优先级
@@ -38,6 +38,7 @@ void NVIC_Init(void) {
  */
 void SysTick_Handler(void) {
    HAL_IncTick();
+   sys_time++;  // 系统滴答定时器每中断一次，系统时间自增一次
 }
 
 /**

@@ -5,10 +5,10 @@
 #include "spi.h"
 #include "tim.h"
 
-volatile task_scheduler_t task_collect_voltage = {0, 200, 0};      // 采集电压周期任务调度器定义
-volatile task_scheduler_t task_collect_temperature = {0, 210, 0};  // 采集温度周期任务调度器定义
-volatile task_scheduler_t task_can_tx_voltage_send = {0, 500, 0};  // 电压发送周期任务调度器定义
-volatile task_scheduler_t task_500ms = {0, 500, 0};                // 500ms周期任务调度器定义
+volatile task_scheduler_t task_collect_voltage = {0, 200, 0};          // 采集电压周期任务调度器定义
+volatile task_scheduler_t task_collect_temperature = {0, 210, 0};      // 采集温度周期任务调度器定义
+volatile task_scheduler_t task_can_tx_voltage_send = {0, 500, 0};      // 电压发送周期任务调度器定义
+volatile task_scheduler_t task_can_tx_temperature_send = {0, 500, 0};  // 温度发送周期任务调度器定义
 
 /********************************************************TIM定时器中断****************************************************/
 /**
@@ -38,18 +38,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
          task_collect_temperature.flag = 1;     // 标志位置1
       }
 
-      // 电压发送周期任务调度器
+      // 更新电压发送周期任务调度器
       task_can_tx_voltage_send.counter++;
       if (task_can_tx_voltage_send.counter >= task_can_tx_voltage_send.period) {
          task_can_tx_voltage_send.counter = 0;  // 重置计数器
          task_can_tx_voltage_send.flag = 1;     // 标志位置1
       }
 
-      // 更新500ms任务调度器
-      task_500ms.counter++;
-      if (task_500ms.counter >= task_500ms.period) {
-         task_500ms.counter = 0;  // 重置计数器
-         task_500ms.flag = 1;     // 标志位置1
+      // 更新温度发送周期任务调度器
+      task_can_tx_temperature_send.counter++;
+      if (task_can_tx_temperature_send.counter >= task_can_tx_temperature_send.period) {
+         task_can_tx_temperature_send.counter = 0;  // 重置计数器
+         task_can_tx_temperature_send.flag = 1;     // 标志位置1
       }
    }
 }

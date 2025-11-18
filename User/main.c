@@ -20,6 +20,7 @@
 // 全局变量
 BMS_State_t state = STATE_INIT;  // 初始化状态
 volatile FLAG_t flag = {0};      // 全局标志位
+volatile uint64_t sys_time = 0;  // 系统时钟
 
 // 主函数
 int main() {
@@ -49,43 +50,25 @@ void state_machine_run(void) {
          LTC6804_init();        // ltc6804初始化
          state = STATE_IDLE;    // 状态转换：ltc6804初始化->空闲状态
          break;
-      case STATE_IDLE:                                           // 空闲状态
-         if (flag.can_send_busy == 0) {                          // 检查can发送邮箱状态
-            if (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) == 0) {  // 获取can发送邮箱空闲数量
-               flag.can_send_busy = 1;                           // 无空邮箱,标志位置1
-               break;                                            // 退出空闲状态
-            }
-            if (flag.voltage_can_tx_PF_10_ready_flag == 1) {  // 检查电压发送报文PF10状态
-               state = STATE_SEND_VOLTAGE;                    // 状态转换:空闲->发送电压
-               break;                                         // 退出空闲状态
-            }
-            if (flag.voltage_can_tx_PF_11_ready_flag == 1) {  // 检查电压发送报文PF11状态
-               state = STATE_SEND_VOLTAGE;                    // 状态转换:空闲->发送电压
-               break;                                         // 退出空闲状态
-            }
-            if (flag.voltage_can_tx_PF_12_ready_flag == 1) {  // 检查电压发送报文PF12状态
-               state = STATE_SEND_VOLTAGE;                    // 状态转换:空闲->发送电压
-               break;                                         // 退出空闲状态
-            }
-            if (flag.voltage_can_tx_PF_13_ready_flag == 1) {  // 检查电压发送报文PF13状态
-               state = STATE_SEND_VOLTAGE;                    // 状态转换:空闲->发送电压
-               break;                                         // 退出空闲状态
-            }
-            if (flag.voltage_can_tx_PF_14_ready_flag == 1) {  // 检查电压发送报文PF14状态
-               state = STATE_SEND_VOLTAGE;                    // 状态转换:空闲->发送电压
-               break;                                         // 退出空闲状态
-            }
-         }
+      case STATE_IDLE:  // 空闲状态
          if (task_can_tx_voltage_send.flag == 1) {
             state = STATE_SEND_VOLTAGE;         // 状态转换：空闲->电压发送状态
             task_can_tx_voltage_send.flag = 0;  // 发送电压周期标志位置0
             break;                              // 退出空闲状态
          }
+
+         if (task_can_tx_temperature_send.flag == 1) {
+            state = STATE_SEND_TEMPERATURE;         // 状态转换：空闲->温度发送状态
+            task_can_tx_temperature_send.flag = 0;  // 发送温度周期标志位置0
+            break;                                  // 退出空闲状态
+         }
+
          if (task_collect_voltage.flag == 1) {
             state = STATE_COLLECT_VOLTAGE;  // 状态转换：空闲->电压采集状态
             task_collect_voltage.flag = 0;  // 采集电压周期标志位置0
             break;                          // 退出空闲状态
          }
+
          if (task_collect_temperature.flag == 1) {
             state = STATE_COLLECT_TEMPERATURE;  // 状态转换：空闲->温度采集状态
             task_collect_temperature.flag = 0;  // 采集温度周期标志位置0
@@ -100,27 +83,39 @@ void state_machine_run(void) {
          }
          break;
       case STATE_COLLECT_TEMPERATURE:  // 采集温度状态
+         if (ltc6804_Get_temperature() == 0) {
+            state = STATE_PROCESS_TEMPERATURE_DATA;  // 状态转换：温度采集状态->温度数据处理状态
+         } else {
+            state = STATE_FAULT_COMMUNICATION_SPI;  // SPI通讯故障,状态转换:电压采集->SPI通讯故障
+         }
          break;
       case STATE_PROCESS_VOLTAGE_DATA:  // 处理电压数据
          if (process_voltage_data() == 0) {
-            flag.voltage_can_tx_PF_10_ready_flag = 1;
-            flag.voltage_can_tx_PF_11_ready_flag = 1;
-            flag.voltage_can_tx_PF_12_ready_flag = 1;
-            flag.voltage_can_tx_PF_13_ready_flag = 1;
-            flag.voltage_can_tx_PF_14_ready_flag = 1;  // 电压发送报文挂起
-            state = STATE_IDLE;                        // 状态转换:电压数据处理->空闲状态
+            flag.voltage_can_tx_01_to_04_ready_flag = 1;
+            flag.voltage_can_tx_05_to_08_ready_flag = 1;
+            flag.voltage_can_tx_09_to_12_ready_flag = 1;
+            flag.voltage_can_tx_13_to_16_ready_flag = 1;
+            flag.voltage_can_tx_17_to_20_ready_flag = 1;  // 电压发送报文挂起
+            state = STATE_IDLE;                           // 状态转换:电压数据处理->空闲状态
          } else {
             state = STATE_FAULT_VOLTAGE_ANOMALY;  // 电压异常,状态转换:电压数据处理->电压异常故障状态
          }
          break;
       case STATE_PROCESS_TEMPERATURE_DATA:  // 处理温度数据
+         if (process_temperature_data() == 0) {
+            state = STATE_IDLE;  // 状态转换:温度数据处理->空闲状态
+         } else {
+            state = STATE_FAULT_TEMPERATURE_ANOMALY;  // 温度异常,状态转换:温度数据处理->温度异常故障状态
+         }
          break;
       case STATE_SEND_VOLTAGE:  // 发送电压数据
-
+         if (can_tx_voltage_data() == 0) {
+            state = STATE_IDLE;  // 状态转换:电压发送->空闲状态
+         }
          break;
       case STATE_SEND_TEMPERATURE:  // 发送温度数据
-         break;
 
+         break;
       default:
          break;
    }
