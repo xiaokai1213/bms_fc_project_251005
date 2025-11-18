@@ -164,6 +164,100 @@ uint8_t can_tx_voltage_data(void) {
 }
 
 /**
+ * @brief   通过can通讯发送温度数据
+ * @return  uint8_t:发送状态
+ * 0:发送成功
+ * 1:发送超时
+ * 2:发送异常
+ */
+uint8_t can_tx_temperature_data(void) {
+   uint8_t return_send_state = 0;       // 要返回的发送状态
+   uint16_t* temperatures_p[temp_num];  // 指针数组,存储温度传感器数据地址,方便后续操作
+   uint8_t ct01to04[8];                 // 建立can报文发送缓冲
+   uint8_t ct05to08[8];
+   uint8_t ct09to10[8];
+
+   // 初始化温度地址
+   temperatures_p[0] = &av_h_ltc6804[0].G1V;
+   temperatures_p[1] = &av_h_ltc6804[0].G2V;
+   temperatures_p[2] = &av_h_ltc6804[0].G3V;
+   temperatures_p[3] = &av_h_ltc6804[0].G4V;
+   temperatures_p[4] = &av_h_ltc6804[0].G5V;
+
+   temperatures_p[5] = &av_h_ltc6804[1].G1V;
+   temperatures_p[6] = &av_h_ltc6804[1].G2V;
+   temperatures_p[7] = &av_h_ltc6804[1].G3V;
+   temperatures_p[8] = &av_h_ltc6804[1].G4V;
+   temperatures_p[9] = &av_h_ltc6804[1].G5V;
+
+   // can报文温度数据填充
+   ct01to04[0] = (uint8_t)(*temperatures_p[0] >> 8);
+   ct01to04[1] = (uint8_t)*temperatures_p[0];
+   ct01to04[2] = (uint8_t)(*temperatures_p[1] >> 8);
+   ct01to04[3] = (uint8_t)*temperatures_p[1];
+   ct01to04[4] = (uint8_t)(*temperatures_p[2] >> 8);
+   ct01to04[5] = (uint8_t)*temperatures_p[2];
+   ct01to04[6] = (uint8_t)(*temperatures_p[3] >> 8);
+   ct01to04[7] = (uint8_t)*temperatures_p[3];
+
+   ct05to08[0] = (uint8_t)(*temperatures_p[4] >> 8);
+   ct05to08[1] = (uint8_t)*temperatures_p[4];
+   ct05to08[2] = (uint8_t)(*temperatures_p[5] >> 8);
+   ct05to08[3] = (uint8_t)*temperatures_p[5];
+   ct05to08[4] = (uint8_t)(*temperatures_p[6] >> 8);
+   ct05to08[5] = (uint8_t)*temperatures_p[6];
+   ct05to08[6] = (uint8_t)(*temperatures_p[7] >> 8);
+   ct05to08[7] = (uint8_t)*temperatures_p[7];
+
+   ct09to10[0] = (uint8_t)(*temperatures_p[8] >> 8);
+   ct09to10[1] = (uint8_t)*temperatures_p[8];
+   ct09to10[2] = (uint8_t)(*temperatures_p[9] >> 8);
+   ct09to10[3] = (uint8_t)*temperatures_p[9];
+   ct09to10[4] = 0;
+   ct09to10[5] = 0;
+   ct09to10[6] = 0;
+   ct09to10[7] = 0;
+
+   uint16_t current_time = sys_time;  // 记录当前时间
+   while (1) {                        // 循环
+      // 检查温度报文1发送标志位
+      if (flag.temperature_can_tx_01_to_04_ready_flag == 1) {
+         if (can_tx_extid_8(can_tx_id_temperature_01_to_04, ct01to04[8]) == 0) {
+            flag.temperature_can_tx_01_to_04_ready_flag = 0;  // 发送位置0
+         }
+      }
+      // 检查温度报文2发送标志位
+      if (flag.temperature_can_tx_05_to_08_ready_flag == 1) {
+         if (can_tx_extid_8(can_tx_id_temperature_05_to_08, ct05to08[8]) == 0) {
+            flag.temperature_can_tx_05_to_08_ready_flag = 0;  // 发送位置0
+         }
+      }
+      // 检查温度报文3发送标志位
+      if (flag.temperature_can_tx_09_to_10_ready_flag == 1) {
+         if (can_tx_extid_8(can_tx_id_temperature_09_to_10, ct09to10[8]) == 0) {
+            flag.temperature_can_tx_09_to_10_ready_flag = 0;  // 发送位置0
+         }
+      }
+
+      // 检查每个报文发送状态
+      if (flag.temperature_can_tx_01_to_04_ready_flag == 0) {
+         if (flag.temperature_can_tx_05_to_08_ready_flag == 0) {
+            if (flag.temperature_can_tx_09_to_10_ready_flag == 0) {
+               return_send_state = 0;
+               return return_send_state;
+            }
+         }
+      }
+
+      //  超时退出
+      if ((sys_time - current_time) > 1000) {
+         return_send_state = 1;  // 发送超时
+         return return_send_state;
+      }
+   }
+}
+
+/**
  * @brief 扩展can发送八位数据帧
  * @param   extid:扩展标识符(29位)，0x1FFFFFFF是最大的29位数
  * @param   data[8]: 要发送的数据指针

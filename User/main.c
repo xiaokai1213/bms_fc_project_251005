@@ -114,7 +114,9 @@ void state_machine_run(void) {
          }
          break;
       case STATE_SEND_TEMPERATURE:  // 发送温度数据
-
+         if (can_tx_temperature_data() == 0) {
+            state = STATE_IDLE;  // 状态转换:温度发送->空闲状态
+         }
          break;
       default:
          break;
