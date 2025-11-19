@@ -38,6 +38,7 @@ void NVIC_Init(void) {
  */
 void SysTick_Handler(void) {
    HAL_IncTick();
+   sys_time++;  // 系统时间变量自增1ms
 }
 
 /**

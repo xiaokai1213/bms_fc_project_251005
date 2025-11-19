@@ -14,7 +14,11 @@
 // BSP1头文件
 #include "can_task.h"
 #include "ltc6804_1_task.h"
+#include "ltc_fsm.h"
 // Middlewares头文件
+#include "task_manager.h"
+
+volatile uint64_t sys_time = 0;  // 系统时间变量，单位：毫秒
 
 // 主函数
 int main() {
@@ -29,6 +33,11 @@ int main() {
    NVIC_Init();            // 中断初始化；中断统一管理
    // ltc6804初始化
    LTC6804_init();
+   // 初始化任务管理器
+   TM_Init();
+   // 初始化并注册 LTC6804 的 FSM（内部会周期性触发采样）
+   ltc_fsm_init();
    while (1) {
+      TM_Run();
    }
 }

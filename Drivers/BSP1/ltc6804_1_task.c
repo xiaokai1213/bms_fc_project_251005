@@ -1,10 +1,15 @@
 #include "ltc6804_1_task.h"
 #include "delay.h"
+#include "main.h"
+#include "task_manager.h"
 
 LTC6804_ConfigRegsTypeDef cfgr_h_ltc6804[total_ic];  // 配置寄存器全局句柄
 LTC6804_StatusRegs stat_h_ltc6804[total_ic];         // 状态寄存器全局句柄
 BatteryVoltageRegs cv_h_ltc6804[total_ic];           // 电池电压全局句柄
 AuxVoltageRegs av_h_ltc6804[total_ic];               // 辅助电压全局句柄
+// 采集就绪标志
+volatile uint8_t ltc_cv_updated = 0;
+volatile uint8_t ltc_av_updated = 0;
 
 /**
  * @brief   ltc6804初始化函数
@@ -43,172 +48,81 @@ void LTC6804_init(void) {
 }
 
 /**
- * @brief   ltc6804电压获取函数，将获取的电压存放在电压结构体句柄中
- * @return  uint8_t pec_error:PEC状态。
- * 0: 读取的数据PEC匹配
- * 1: 读取的数据PEC不匹配
+ * @brief 周期任务：触发 ADC 转换（非阻塞），并注册一次性延迟读取任务
+ * @param arg 未使用
  */
-uint8_t ltc6804_Get_Voltage(void) {
-   uint8_t pec_error = 0;                                                       // 定义pec错误标志位
-   LTC6804_adcv(MD_NORMAL, DCP_DISABLED, CH_ALL);                               // 电池通道ADC转换命令，以正常转换，禁止放电，所有通道模式发送命令
-   delay_ms(10);                                                                // 延时10ms等待转换完成
-   pec_error = read_LTC6804_Battery_voltage_registers(total_ic, cv_h_ltc6804);  // 读取电压到电池电压储存控制句柄
-   return pec_error;                                                            // 返回pec参数
-}
-
-/**
- * @brief   ltc6804电芯温度获取函数，获取辅助GPIO测量得到的外部电芯电压
- */
-void ltc6804_Get_temperature(void) {
-   LTC6804_adax(MD_NORMAL, CHG_ALL);                                  // GPIO通道ADC转换命令，以正常转换，所有通道模式发送命令
-   delay_ms(10);                                                      // 延时10ms等待转换完成
-   read_LTC6804_Auxiliary_voltage_registers(total_ic, av_h_ltc6804);  // 读取温度电压到温度存储控制句柄
-}
-
-void ltc6804_st(void) {
-   LTC6804_adstat(MD_NORMAL, CHST_ALL);
-   read_LTC6804_status_registers(total_ic, stat_h_ltc6804);
-   printf(",REV=%d\n", (int)stat_h_ltc6804[0].groupA.STAR0.reg_val);
-   printf(",REV=%d\n", (int)stat_h_ltc6804[0].groupA.STAR1.reg_val);
-}
-
-void ltc6804_cv(void) {
+void ltc_sample_task(void* arg) {
+   /* 触发电压 ADC 转换（不读取），尽量短时间内完成 */
    LTC6804_adcv(MD_NORMAL, DCP_DISABLED, CH_ALL);
-   // LTC6804_cvst(MD_NORMAL, ST1);
-   delay_ms(20);
-   read_LTC6804_Battery_voltage_registers(total_ic, cv_h_ltc6804);
-   for (uint8_t ic = 0; ic < total_ic; ic++) {
-      printf("[%d]vbat:%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", (int)ic, (float)cv_h_ltc6804[ic].C01V / 10000, (float)cv_h_ltc6804[ic].C02V / 10000, (float)cv_h_ltc6804[ic].C03V / 10000,
-             (float)cv_h_ltc6804[ic].C04V / 10000, (float)cv_h_ltc6804[ic].C05V / 10000, (float)cv_h_ltc6804[ic].C06V / 10000, (float)cv_h_ltc6804[ic].C07V / 10000,
-             (float)cv_h_ltc6804[ic].C08V / 10000, (float)cv_h_ltc6804[ic].C09V / 10000, (float)cv_h_ltc6804[ic].C10V / 10000, (float)cv_h_ltc6804[ic].C11V / 10000,
-             (float)cv_h_ltc6804[ic].C12V / 10000);
 
-      /*
-      printf("[%d]v1:%f\n", (int)ic, (float)cv_h_ltc6804[ic].C01V / 10000);
-printf("[%d]v2:%f\n", (int)ic, (float)cv_h_ltc6804[ic].C02V / 10000);
-printf("[%d]v3:%f\n", (int)ic, (float)cv_h_ltc6804[ic].C03V / 10000);
-delay_ms(10);
-printf("[%d]v4:%f\n", (int)ic, (float)cv_h_ltc6804[ic].C04V / 10000);
-printf("[%d]v5:%f\n", (int)ic, (float)cv_h_ltc6804[ic].C05V / 10000);
-// printf("[%d]v6:%f\n", (int)ic, (float)cv_h_ltc6804[ic].C06V / 10000);
-delay_ms(10);
-printf("[%d]v7:%f\n", (int)ic, (float)cv_h_ltc6804[ic].C07V / 10000);
-printf("[%d]v8:%f\n", (int)ic, (float)cv_h_ltc6804[ic].C08V / 10000);
-printf("[%d]v9:%f\n", (int)ic, (float)cv_h_ltc6804[ic].C09V / 10000);
-delay_ms(10);
-printf("[%d]v10:%f\n", (int)ic, (float)cv_h_ltc6804[ic].C10V / 10000);
-printf("[%d]v11:%f\n", (int)ic, (float)cv_h_ltc6804[ic].C11V / 10000);
-// printf("[%d]v12:%f\n", (int)ic, (float)cv_h_ltc6804[ic].C12V / 10000);
-      */
-
-      delay_ms(10);
-      printf("\r\n");
-   }
+   /* 注册一次性读取任务：延迟 10ms 后读取转换结果并打印（一次性任务） */
+   extern int TM_Register(TaskFunc func, void* arg, uint32_t period_ms, uint8_t repeat, uint32_t delay_ms);
+   TM_Register(ltc_sample_read_task, NULL, 0, 0, 10);
 }
 
 /**
- * @brief   导线开路检查函数
- * @return
+ * @brief 一次性读取任务：读取电压寄存器并打印第一块第一个电芯的电压
+ * @param arg 未使用
  */
-uint8_t ltc6804_Open_wire_inspection(void) {
-   uint8_t wire_error = 0;         // 导线开路错误返回位
-   uint8_t wire_error2 = 0;        // 导线开路错误返回位
-   float cell_pu[total_ic][12];    // 上拉电流读取的电池电压
-   float cell_pd[total_ic][12];    // 下拉电流读取的电池电压
-   float cell_diff[total_ic][13];  // 电池2-12的上拉与下拉测量结果之差
-
-   LTC6804_adow(MD_NORMAL, PUP_UP, DCP_DISABLED, CH_ALL);
-   delay_ms(3);
-   LTC6804_adow(MD_NORMAL, PUP_UP, DCP_DISABLED, CH_ALL);
-   delay_ms(3);
-   LTC6804_adow(MD_NORMAL, PUP_UP, DCP_DISABLED, CH_ALL);
-   delay_ms(3);
-   read_LTC6804_Battery_voltage_registers(total_ic, cv_h_ltc6804);
-   for (uint8_t ic = 0; ic < total_ic; ic++) {
-      cell_pu[ic][0] = (float)cv_h_ltc6804[ic].C01V / 10000;
-      cell_pu[ic][1] = (float)cv_h_ltc6804[ic].C02V / 10000;
-      cell_pu[ic][2] = (float)cv_h_ltc6804[ic].C03V / 10000;
-      cell_pu[ic][3] = (float)cv_h_ltc6804[ic].C04V / 10000;
-      cell_pu[ic][4] = (float)cv_h_ltc6804[ic].C05V / 10000;
-      cell_pu[ic][5] = (float)cv_h_ltc6804[ic].C06V / 10000;
-      cell_pu[ic][6] = (float)cv_h_ltc6804[ic].C07V / 10000;
-      cell_pu[ic][7] = (float)cv_h_ltc6804[ic].C08V / 10000;
-      cell_pu[ic][8] = (float)cv_h_ltc6804[ic].C09V / 10000;
-      cell_pu[ic][9] = (float)cv_h_ltc6804[ic].C10V / 10000;
-      cell_pu[ic][10] = (float)cv_h_ltc6804[ic].C11V / 10000;
-      cell_pu[ic][11] = (float)cv_h_ltc6804[ic].C12V / 10000;
+void ltc_sample_read_task(void* arg) {
+   uint8_t pec = read_LTC6804_Battery_voltage_registers(total_ic, cv_h_ltc6804);
+   if (pec != 0) {
+      printf("ltc6804 read voltage PEC error=%d\r\n", pec);
+      return;
    }
-   LTC6804_adow(MD_NORMAL, PUP_DOWN, DCP_DISABLED, CH_ALL);
-   delay_ms(3);
-   LTC6804_adow(MD_NORMAL, PUP_DOWN, DCP_DISABLED, CH_ALL);
-   delay_ms(3);
-   LTC6804_adow(MD_NORMAL, PUP_DOWN, DCP_DISABLED, CH_ALL);
-   delay_ms(3);
-   read_LTC6804_Battery_voltage_registers(total_ic, cv_h_ltc6804);  // 读取电池电压
-   for (uint8_t ic = 0; ic < total_ic; ic++) {
-      cell_pd[ic][0] = (float)cv_h_ltc6804[ic].C01V / 10000;
-      cell_pd[ic][1] = (float)cv_h_ltc6804[ic].C02V / 10000;
-      cell_pd[ic][2] = (float)cv_h_ltc6804[ic].C03V / 10000;
-      cell_pd[ic][3] = (float)cv_h_ltc6804[ic].C04V / 10000;
-      cell_pd[ic][4] = (float)cv_h_ltc6804[ic].C05V / 10000;
-      cell_pd[ic][5] = (float)cv_h_ltc6804[ic].C06V / 10000;
-      cell_pd[ic][6] = (float)cv_h_ltc6804[ic].C07V / 10000;
-      cell_pd[ic][7] = (float)cv_h_ltc6804[ic].C08V / 10000;
-      cell_pd[ic][8] = (float)cv_h_ltc6804[ic].C09V / 10000;
-      cell_pd[ic][9] = (float)cv_h_ltc6804[ic].C10V / 10000;
-      cell_pd[ic][10] = (float)cv_h_ltc6804[ic].C11V / 10000;
-      cell_pd[ic][11] = (float)cv_h_ltc6804[ic].C12V / 10000;
-   }
-
-   for (uint8_t ic = 0; ic < total_ic; ic++) {
-      cell_diff[ic][0] = cell_pu[ic][0];
-      cell_diff[ic][1] = cell_pu[ic][1] - cell_pd[ic][1];
-      cell_diff[ic][2] = cell_pu[ic][2] - cell_pd[ic][2];
-      cell_diff[ic][3] = cell_pu[ic][3] - cell_pd[ic][3];
-      cell_diff[ic][4] = cell_pu[ic][4] - cell_pd[ic][4];
-      cell_diff[ic][5] = cell_pu[ic][5] - cell_pd[ic][5];
-      cell_diff[ic][6] = cell_pu[ic][6] - cell_pd[ic][6];
-      cell_diff[ic][7] = cell_pu[ic][7] - cell_pd[ic][7];
-      cell_diff[ic][8] = cell_pu[ic][8] - cell_pd[ic][8];
-      cell_diff[ic][9] = cell_pu[ic][9] - cell_pd[ic][9];
-      cell_diff[ic][10] = cell_pu[ic][10] - cell_pd[ic][10];
-      cell_diff[ic][11] = cell_pu[ic][11] - cell_pd[ic][11];
-      cell_diff[ic][12] = cell_pd[ic][11];
-   }
-
-   for (uint8_t ic = 0; ic < total_ic; ic++) {
-      for (uint8_t i = 0; i < 13; i++) {
-         if (i == 0) {
-            wire_error = (cell_diff[ic][i] < 0.1) ? 1 : 0;
-            if (wire_error == 1) {
-               wire_error2 = 1;
-            }
-            printf("wire_error:%d\n", (int)wire_error);
-         } else {
-            wire_error = (cell_diff[ic][i] < -0.4) ? 1 : 0;
-            if (wire_error == 1) {
-               wire_error2 = 1;
-            }
-            printf("wire_error:%d\n", (int)wire_error);
-         }
-
-         // printf("diff[%d]:%f\n", (int)i, cell_diff[ic][i]);
-      }
-   }
-   printf("\r\n");
-   return wire_error2;
+   /* 标记电压数据已更新，供其它模块读取或上报 */
+   ltc_cv_updated = 1;
 }
 
-// 电池电压拆分can高低位数据示例
-/*
-uint8_t cv[8];
-      cv[0] = (uint8_t)(cv_h_ltc6804[0].C01V >> 8);
-      cv[1] = (uint8_t)cv_h_ltc6804[0].C01V;
-      cv[2] = (uint8_t)(cv_h_ltc6804[0].C02V >> 8);
-      cv[3] = (uint8_t)cv_h_ltc6804[0].C02V;
-      cv[4] = (uint8_t)(cv_h_ltc6804[0].C03V >> 8);
-      cv[5] = (uint8_t)cv_h_ltc6804[0].C03V;
-      cv[6] = (uint8_t)(cv_h_ltc6804[0].C04V >> 8);
-      cv[7] = (uint8_t)cv_h_ltc6804[0].C04V;
-      printf("\r\n");
-*/
+/**
+ * @brief 周期任务：触发温度（辅助）ADC转换并注册延迟读取任务
+ * @param arg 未使用
+ */
+void ltc_temp_sample_task(void* arg) {
+   /* 触发辅助 ADC 转换（GPIO/温度） */
+   LTC6804_adax(MD_NORMAL, CHG_ALL);
+
+   /* 注册一次性读取任务：延迟 10ms 后读取转换结果并打印 */
+   extern int TM_Register(TaskFunc func, void* arg, uint32_t period_ms, uint8_t repeat, uint32_t delay_ms);
+   TM_Register(ltc_temp_read_task, NULL, 0, 0, 10);
+}
+
+/**
+ * @brief 一次性读取任务：读取辅助寄存器并打印部分温度/辅助电压
+ * @param arg 未使用
+ */
+void ltc_temp_read_task(void* arg) {
+   uint8_t pec = read_LTC6804_Auxiliary_voltage_registers(total_ic, av_h_ltc6804);
+   if (pec != 0) {
+      printf("ltc6804 read aux PEC error=%d\r\n", pec);
+      return;
+   }
+   /* 标记辅助(温度)数据已更新，供其它模块读取或上报 */
+   ltc_av_updated = 1;
+}
+
+/**
+ * @brief 原子读取并清除电压更新标志
+ * @return 原来的标志值（1 = 有新数据）
+ */
+uint8_t ltc_get_and_clear_cv_updated(void) {
+   uint8_t v;
+   __disable_irq();
+   v = ltc_cv_updated;
+   ltc_cv_updated = 0;
+   __enable_irq();
+   return v;
+}
+
+/**
+ * @brief 原子读取并清除辅助/温度更新标志
+ * @return 原来的标志值（1 = 有新数据）
+ */
+uint8_t ltc_get_and_clear_av_updated(void) {
+   uint8_t v;
+   __disable_irq();
+   v = ltc_av_updated;
+   ltc_av_updated = 0;
+   __enable_irq();
+   return v;
+}

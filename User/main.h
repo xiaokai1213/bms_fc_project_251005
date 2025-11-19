@@ -10,6 +10,8 @@
 #define max_cell_voltage 42000  // 最大值不超过65535
 #define min_cell_voltage 32000  // 最小值不小于1
 
+extern volatile uint64_t sys_time;  // 系统时间变量，单位：毫秒
+
 // 函数声明
 
 #endif  // _MAIN_H
