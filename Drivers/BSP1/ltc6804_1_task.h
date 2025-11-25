@@ -12,6 +12,26 @@ extern LTC6804_StatusRegs stat_h_ltc6804[total_ic];         // 6804状态寄存�
 extern BatteryVoltageRegs cv_h_ltc6804[total_ic];           // 6804电池电压数据寄存器句柄
 extern AuxVoltageRegs av_h_ltc6804[total_ic];               // 6804辅助电压寄存器句柄
 
+// ltc6804状态机状态枚举
+typedef enum {
+   LTC6804_STATE_INIT = 0,          // 初始化
+   LTC6804_STATE_READ_VOLTAGE,      // 读取电池电压
+   LTC6804_STATE_READ_TEMPERATURE,  // 读取温度
+   LTC6804_STATE_IDLE,              // 空闲
+   LTC6804_STATE_ERROR,             // 错误
+   LTC6804_STATE
+} ltc6804_state_t;  // ltc6804状态机当前状态变量
+
+// ltc6804事件枚举
+typedef enum {
+   LTC6804_EVENT_INIT = 0,          // 初始化事件
+   LTC6804_EVENT_READ_VOLTAGE,      // 读取电池电压事件
+   LTC6804_EVENT_READ_TEMPERATURE,  // 读取温度事件
+   LTC6804_EVENT_IDLE,              // 空闲事件
+   LTC6804_EVENT_ERROR,             // 错误事件
+   LTC6804_EVENT
+} ltc6804_event_t;  // ltc6804状态机当前事件变量
+
 void LTC6804_init(void);                // ltc6804初始化函数
 uint8_t ltc6804_Get_Voltage(void);      // ltc6804电池电压获取函数
 uint8_t ltc6804_Get_temperature(void);  // ltc6804温度获取函数

@@ -6,6 +6,14 @@ LTC6804_StatusRegs stat_h_ltc6804[total_ic];         // 状态寄存器全局句
 BatteryVoltageRegs cv_h_ltc6804[total_ic];           // 电池电压全局句柄
 AuxVoltageRegs av_h_ltc6804[total_ic];               // 辅助电压全局句柄
 
+ltc6804_event_t LTC6804_EVENT = LTC6804_EVENT_INIT;  // ltc6804状态机当前事件变量
+ltc6804_state_t LTC6804_STATE = LTC6804_STATE_INIT;  // ltc6804状态机当前状态变量
+
+/**
+ * @brief   ltc6804事件状态机
+ */
+void ltc6804_state_machine(ltc6804_event_t) {}
+
 /**
  * @brief   ltc6804初始化函数
  */
