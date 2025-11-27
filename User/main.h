@@ -18,6 +18,6 @@
 #define max_cell_temperature 32000  // 最大温度对应的电压值
 
 // 全局变量
-extern volatile uint64_t sys_time = 0;  // 系统时钟
+extern volatile uint64_t sys_time;  // 系统时钟
 
 #endif  // _MAIN_H

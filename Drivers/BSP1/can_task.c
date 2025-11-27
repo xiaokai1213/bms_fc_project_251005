@@ -3,17 +3,49 @@
 #include "led_relay_gpio.h"
 #include "ltc6804_1_task.h"
 
-CAN_TX_FLAG_t flag = {0};  // CAN发送标志位管理句柄
+volatile CAN_TX_FLAG_t can_tx_flag = {0};  // CAN发送标志位管理句柄
+
+CAN_ResponseEnum_t can_task_run(CAN_EventEnum_t event) {
+   CAN_ResponseEnum_t resp = CAN_RESP_OK;  // 默认响应为正常
+
+   can_tx_flag.can_free_mailbox_counter = HAL_CAN_GetTxMailboxesFreeLevel(&hcan1);  // 获取当前空邮箱数量
+
+   if (can_tx_flag.can_free_mailbox_counter == 0) {  // 判断如果没有空邮箱
+      resp = CAN_RESP_BUS_BUSY;                      // 总线忙，等待发送完成
+      return resp;                                   // 直接返回
+   }
+
+   if (event == CAN_EVENT_TX_VOLTAGE_DATA) {  // 发送电压数据事件
+      if (can_tx_voltage_data() == 0) {       // 发送电压数据
+         resp = CAN_RESP_OK;                  // 发送完成
+         return resp;                         // 直接返回
+      } else {
+         resp = CAN_RESP_BUS_BUSY;  // 发送未完成
+         return resp;               // 直接返回
+      }
+   }
+
+   if (event == CAN_EVENT_TX_TEMPERATURE_DATA) {  // 发送温度数据事件
+      if (can_tx_temperature_data() == 0) {       // 发送温度数据
+         resp = CAN_RESP_OK;                      // 发送完成
+         return resp;                             // 直接返回
+      } else {
+         resp = CAN_RESP_BUS_BUSY;  // 发送未完成
+         return resp;               // 直接返回
+      }
+   }
+
+   return resp;  // 默认返回
+}
 
 /**
  * @brief   通过can通讯发送电压数据
  * @return  uint8_t:发送状态
- * 0:发送成功
- * 1:发送超时
- * 2:发送异常
+ * 0:发送完成
+ * 1:发送未完成
  */
 uint8_t can_tx_voltage_data(void) {
-   uint8_t return_send_state = 0;   // 要返回的发送状态
+   uint8_t return_send_state = 1;   // 要返回的发送状态，默认未完成
    uint16_t* voltages_p[cell_num];  // 指针数组,存储20个电芯电压数据地址,方便后续操作
    uint8_t cv01to04[8];             // 建立can报文发送缓冲
    uint8_t cv05to08[8];
@@ -21,7 +53,7 @@ uint8_t can_tx_voltage_data(void) {
    uint8_t cv13to16[8];
    uint8_t cv17to20[8];
 
-   // 初始化电压地址
+   // 初始化电压地址,方便后续操作
    voltages_p[0] = &cv_h_ltc6804[0].C01V;
    voltages_p[1] = &cv_h_ltc6804[0].C02V;
    voltages_p[2] = &cv_h_ltc6804[0].C03V;
@@ -46,9 +78,9 @@ uint8_t can_tx_voltage_data(void) {
    voltages_p[18] = &cv_h_ltc6804[1].C10V;
    voltages_p[19] = &cv_h_ltc6804[1].C11V;
 
-   // can报文电压发送缓冲区
-   cv01to04[0] = (uint8_t)(*voltages_p[0] >> 8);
-   cv01to04[1] = (uint8_t)*voltages_p[0];
+   // 将电压填充到can报文发送缓冲区
+   cv01to04[0] = (uint8_t)(*voltages_p[0] >> 8);  // 高八位
+   cv01to04[1] = (uint8_t)*voltages_p[0];         // 低八位
    cv01to04[2] = (uint8_t)(*voltages_p[1] >> 8);
    cv01to04[3] = (uint8_t)*voltages_p[1];
    cv01to04[4] = (uint8_t)(*voltages_p[2] >> 8);
@@ -92,71 +124,63 @@ uint8_t can_tx_voltage_data(void) {
    cv17to20[6] = (uint8_t)(*voltages_p[19] >> 8);
    cv17to20[7] = (uint8_t)*voltages_p[19];
 
-   uint64_t current_time = sys_time;  // 记录当前时间
-   while (1) {                        // 循环
-      // 检查电压报文1发送标志位
-      if (flag.voltage_can_tx_01_to_04_ready_flag == 1) {
-         if (can_tx_extid_8(can_tx_id_voltage_01_to_04, cv01to04[8]) == 0) {
-            flag.voltage_can_tx_01_to_04_ready_flag = 0;  // 发送位置0
-         }
+   // 检查电压报文1发送标志位
+   if (can_tx_flag.voltage_can_tx_01_to_04_ready_flag == 1) {
+      if (can_tx_extid_8(can_tx_id_voltage_01_to_04, cv01to04[8]) == 0) {
+         can_tx_flag.voltage_can_tx_01_to_04_ready_flag = 0;  // 发送位置0
       }
+   }
 
-      // 检查电压报文2发送标志位
-      if (flag.voltage_can_tx_05_to_08_ready_flag == 1) {
-         if (can_tx_extid_8(can_tx_id_voltage_05_to_08, cv05to08[8]) == 0) {
-            flag.voltage_can_tx_05_to_08_ready_flag = 0;  // 发送位置0
-         }
+   // 检查电压报文2发送标志位
+   if (can_tx_flag.voltage_can_tx_05_to_08_ready_flag == 1) {
+      if (can_tx_extid_8(can_tx_id_voltage_05_to_08, cv05to08[8]) == 0) {
+         can_tx_flag.voltage_can_tx_05_to_08_ready_flag = 0;  // 发送位置0
       }
+   }
 
-      // 检查电压报文3发送标志位
-      if (flag.voltage_can_tx_09_to_12_ready_flag == 1) {
-         if (can_tx_extid_8(can_tx_id_voltage_09_to_12, cv09to12[8]) == 0) {
-            flag.voltage_can_tx_09_to_12_ready_flag = 0;  // 发送位置0
-         }
+   // 检查电压报文3发送标志位
+   if (can_tx_flag.voltage_can_tx_09_to_12_ready_flag == 1) {
+      if (can_tx_extid_8(can_tx_id_voltage_09_to_12, cv09to12[8]) == 0) {
+         can_tx_flag.voltage_can_tx_09_to_12_ready_flag = 0;  // 发送位置0
       }
+   }
 
-      // 检查电压报文4发送标志位
-      if (flag.voltage_can_tx_13_to_16_ready_flag == 1) {
-         if (can_tx_extid_8(can_tx_id_voltage_13_to_16, cv13to16[8]) == 0) {
-            flag.voltage_can_tx_13_to_16_ready_flag = 0;  // 发送位置0
-         }
+   // 检查电压报文4发送标志位
+   if (can_tx_flag.voltage_can_tx_13_to_16_ready_flag == 1) {
+      if (can_tx_extid_8(can_tx_id_voltage_13_to_16, cv13to16[8]) == 0) {
+         can_tx_flag.voltage_can_tx_13_to_16_ready_flag = 0;  // 发送位置0
       }
+   }
 
-      // 检查电压报文4发送标志位
-      if (flag.voltage_can_tx_17_to_20_ready_flag == 1) {
-         if (can_tx_extid_8(can_tx_id_voltage_17_to_20, cv17to20[8]) == 0) {
-            flag.voltage_can_tx_17_to_20_ready_flag = 0;  // 发送位置0
-         }
+   // 检查电压报文4发送标志位
+   if (can_tx_flag.voltage_can_tx_17_to_20_ready_flag == 1) {
+      if (can_tx_extid_8(can_tx_id_voltage_17_to_20, cv17to20[8]) == 0) {
+         can_tx_flag.voltage_can_tx_17_to_20_ready_flag = 0;  // 发送位置0
       }
+   }
 
-      // 检查每个报文发送状态
-      if (flag.voltage_can_tx_01_to_04_ready_flag == 0) {
-         if (flag.voltage_can_tx_05_to_08_ready_flag == 0) {
-            if (flag.voltage_can_tx_09_to_12_ready_flag == 0) {
-               if (flag.voltage_can_tx_13_to_16_ready_flag == 0) {
-                  if (flag.voltage_can_tx_17_to_20_ready_flag == 0) {
-                     return_send_state = 0;
-                     return return_send_state;
-                  }
+   return_send_state = 1;  // 默认发送未完成
+   // 检查每个报文发送状态
+   if (can_tx_flag.voltage_can_tx_01_to_04_ready_flag == 0) {
+      if (can_tx_flag.voltage_can_tx_05_to_08_ready_flag == 0) {
+         if (can_tx_flag.voltage_can_tx_09_to_12_ready_flag == 0) {
+            if (can_tx_flag.voltage_can_tx_13_to_16_ready_flag == 0) {
+               if (can_tx_flag.voltage_can_tx_17_to_20_ready_flag == 0) {
+                  return_send_state = 0;  // 全部发送完成
                }
             }
          }
       }
-
-      //  超时退出
-      if ((sys_time - current_time) > 1000) {
-         return_send_state = 1;  // 发送超时
-         return return_send_state;
-      }
    }
+
+   return return_send_state;  // 返回发送状态
 }
 
 /**
  * @brief   通过can通讯发送温度数据
  * @return  uint8_t:发送状态
- * 0:发送成功
- * 1:发送超时
- * 2:发送异常
+ * 0:发送完成
+ * 1:发送未完成
  */
 uint8_t can_tx_temperature_data(void) {
    uint8_t return_send_state = 0;       // 要返回的发送状态
@@ -179,8 +203,8 @@ uint8_t can_tx_temperature_data(void) {
    temperatures_p[9] = &av_h_ltc6804[1].G5V;
 
    // can报文温度数据填充
-   ct01to04[0] = (uint8_t)(*temperatures_p[0] >> 8);
-   ct01to04[1] = (uint8_t)*temperatures_p[0];
+   ct01to04[0] = (uint8_t)(*temperatures_p[0] >> 8);  // 高八位
+   ct01to04[1] = (uint8_t)*temperatures_p[0];         // 低八位
    ct01to04[2] = (uint8_t)(*temperatures_p[1] >> 8);
    ct01to04[3] = (uint8_t)*temperatures_p[1];
    ct01to04[4] = (uint8_t)(*temperatures_p[2] >> 8);
@@ -206,43 +230,36 @@ uint8_t can_tx_temperature_data(void) {
    ct09to10[6] = 0;
    ct09to10[7] = 0;
 
-   uint16_t current_time = sys_time;  // 记录当前时间
-   while (1) {                        // 循环
-      // 检查温度报文1发送标志位
-      if (flag.temperature_can_tx_01_to_04_ready_flag == 1) {
-         if (can_tx_extid_8(can_tx_id_temperature_01_to_04, ct01to04[8]) == 0) {
-            flag.temperature_can_tx_01_to_04_ready_flag = 0;  // 发送位置0
-         }
-      }
-      // 检查温度报文2发送标志位
-      if (flag.temperature_can_tx_05_to_08_ready_flag == 1) {
-         if (can_tx_extid_8(can_tx_id_temperature_05_to_08, ct05to08[8]) == 0) {
-            flag.temperature_can_tx_05_to_08_ready_flag = 0;  // 发送位置0
-         }
-      }
-      // 检查温度报文3发送标志位
-      if (flag.temperature_can_tx_09_to_10_ready_flag == 1) {
-         if (can_tx_extid_8(can_tx_id_temperature_09_to_10, ct09to10[8]) == 0) {
-            flag.temperature_can_tx_09_to_10_ready_flag = 0;  // 发送位置0
-         }
-      }
-
-      // 检查每个报文发送状态
-      if (flag.temperature_can_tx_01_to_04_ready_flag == 0) {
-         if (flag.temperature_can_tx_05_to_08_ready_flag == 0) {
-            if (flag.temperature_can_tx_09_to_10_ready_flag == 0) {
-               return_send_state = 0;
-               return return_send_state;
-            }
-         }
-      }
-
-      //  超时退出
-      if ((sys_time - current_time) > 1000) {
-         return_send_state = 1;  // 发送超时
-         return return_send_state;
+   // 检查温度报文1发送标志位
+   if (can_tx_flag.temperature_can_tx_01_to_04_ready_flag == 1) {
+      if (can_tx_extid_8(can_tx_id_temperature_01_to_04, ct01to04[8]) == 0) {
+         can_tx_flag.temperature_can_tx_01_to_04_ready_flag = 0;  // 发送位置0
       }
    }
+   // 检查温度报文2发送标志位
+   if (can_tx_flag.temperature_can_tx_05_to_08_ready_flag == 1) {
+      if (can_tx_extid_8(can_tx_id_temperature_05_to_08, ct05to08[8]) == 0) {
+         can_tx_flag.temperature_can_tx_05_to_08_ready_flag = 0;  // 发送位置0
+      }
+   }
+   // 检查温度报文3发送标志位
+   if (can_tx_flag.temperature_can_tx_09_to_10_ready_flag == 1) {
+      if (can_tx_extid_8(can_tx_id_temperature_09_to_10, ct09to10[8]) == 0) {
+         can_tx_flag.temperature_can_tx_09_to_10_ready_flag = 0;  // 发送位置0
+      }
+   }
+
+   return_send_state = 1;  // 发送未完成
+   // 检查每个报文发送状态
+   if (can_tx_flag.temperature_can_tx_01_to_04_ready_flag == 0) {
+      if (can_tx_flag.temperature_can_tx_05_to_08_ready_flag == 0) {
+         if (can_tx_flag.temperature_can_tx_09_to_10_ready_flag == 0) {
+            return_send_state = 0;  // 全部发送完成
+         }
+      }
+   }
+
+   return return_send_state;  // 返回发送状态
 }
 
 /**
@@ -274,15 +291,15 @@ uint8_t can_tx_extid_8(uint32_t extid, uint8_t data[8]) {
    TxHeader.TransmitGlobalTime = DISABLE;
 
    // 发送消息
-   if (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 0) {
-      if (HAL_CAN_AddTxMessage(&hcan1, &TxHeader, txdata, &TxMailbox) != HAL_OK) {
+   if (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 0) {                              // 获取空闲邮箱数量，如果不为0，表示有空闲邮箱
+      if (HAL_CAN_AddTxMessage(&hcan1, &TxHeader, txdata, &TxMailbox) != HAL_OK) {  // 添加发送消息到邮箱
          printf("can_tx_error\n");
-         send_state = 2;
+         send_state = 2;  // 发送异常
       } else {
-         send_state = 0;
+         send_state = 0;  // 发送成功
       }
    } else {
-      send_state = 1;
+      send_state = 1;  // 发送总线忙
    }
    return send_state;
 }

@@ -1,5 +1,6 @@
 #include "callback.h"
 #include "can.h"
+#include "can_task.h"
 #include "delay.h"
 #include "main.h"
 #include "spi.h"
@@ -80,21 +81,21 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef* hspi) {
  * @brief   当CAN的发送邮箱0（Tx Mailbox 0）完成一次发送时，此回调函数被调用。
  */
 void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef* hcan) {
-   flag.can_send_busy = 0;  // can发送邮箱状态置0
+   can_tx_flag.can_free_mailbox_counter = HAL_CAN_GetTxMailboxesFreeLevel(&hcan1);  // 获取当前空邮箱数量
 }
 
 /**
  * @brief   当CAN的发送邮箱1（Tx Mailbox 1）完成一次发送时，此回调函数被调用。
  */
 void HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef* hcan) {
-   flag.can_send_busy = 0;  // can发送邮箱状态置0
+   can_tx_flag.can_free_mailbox_counter = HAL_CAN_GetTxMailboxesFreeLevel(&hcan1);  // 获取当前空邮箱数量
 }
 
 /**
  * @brief   当CAN的发送邮箱2（Tx Mailbox 2）完成一次发送时，此回调函数被调用。
  */
 void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef* hcan) {
-   flag.can_send_busy = 0;  // can发送邮箱状态置0
+   can_tx_flag.can_free_mailbox_counter = HAL_CAN_GetTxMailboxesFreeLevel(&hcan1);  // 获取当前空邮箱数量
 }
 
 /********************************************************CAN中断发送被中止****************************************************/

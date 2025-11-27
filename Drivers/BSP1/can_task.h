@@ -29,17 +29,9 @@ typedef enum {
    CAN_EVENT
 } CAN_EventEnum_t;  // CAN事件枚举定义
 
-typedef enum {
-   CAN_STATE_IDLE = 0,             // 空闲状态
-   CAN_STATE_TX_VOLTAGE_DATA,      // 发送电压数据状态
-   CAN_STATE_TX_TEMPERATURE_DATA,  // 发送温度数据状态
-   CAN_STATE
-} CAN_StateEnum_t;  // CAN状态机状态枚举定义
-
 // CAN发送句柄管理
 typedef struct {
-   uint8_t can_free_mailbox_counter;                    // can发送空邮箱计数器
-   uint8_t can_send_busy : 1;                           // CAN发送邮箱忙指示,0有空邮箱,1无空邮箱
+   uint32_t can_free_mailbox_counter : 3;               // can发送空邮箱计数器
    uint8_t voltage_can_tx_01_to_04_ready_flag : 1;      // 电压发送报文10挂起标志位
    uint8_t voltage_can_tx_05_to_08_ready_flag : 1;      // 电压发送报文10挂起标志位
    uint8_t voltage_can_tx_09_to_12_ready_flag : 1;      // 电压发送报文10挂起标志位
@@ -49,7 +41,9 @@ typedef struct {
    uint8_t temperature_can_tx_05_to_08_ready_flag : 1;  // 温度发送报文10挂起标志位
    uint8_t temperature_can_tx_09_to_10_ready_flag : 1;  // 温度发送报文10挂起标志位
 } CAN_TX_FLAG_t;
+extern volatile CAN_TX_FLAG_t can_tx_flag;  // CAN发送标志位管理句柄
 
+CAN_ResponseEnum_t can_task_run(CAN_EventEnum_t event);   // can任务函数
 uint8_t can_tx_voltage_data(void);                        // 通过can通讯发送电压数据
 uint8_t can_tx_temperature_data(void);                    // 通过can通讯发送温度数据
 uint8_t can_tx_extid_8(uint32_t extid, uint8_t data[8]);  // 扩展can发送八位数据帧

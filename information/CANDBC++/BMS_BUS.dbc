@@ -37,76 +37,104 @@ BU_:
 
 
 BO_ 3221225472 VECTOR__INDEPENDENT_SIG_MSG: 0 Vector__XXX
- SG_ pack_2_cell_vol_01 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_02 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_03 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_04 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_05 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_06 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_07 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_08 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_09 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_10 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_11 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_12 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_13 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_14 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_15 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_16 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_17 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_18 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_19 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_2_cell_vol_20 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_01 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_02 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_03 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_04 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_05 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_06 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_07 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_08 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_09 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_10 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_11 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_12 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_13 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_14 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_15 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_16 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ temp_x : 0|16@1+ (1,0) [0|65535] "null" Vector__XXX
+
+BO_ 2165838674 pack_3_cv_17_to_20: 8 Vector__XXX
+ SG_ pack_3_cell_vol_20 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_3_cell_vol_19 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_3_cell_vol_18 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
  SG_ pack_3_cell_vol_17 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_18 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_19 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_3_cell_vol_20 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_20 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_19 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_18 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_17 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_16 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_15 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_14 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_13 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_12 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_11 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_10 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_09 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_08 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_07 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_06 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+
+BO_ 2165828673 pack_3_cv_13_to_16: 8 Vector__XXX
+ SG_ pack_3_cell_vol_16 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_3_cell_vol_15 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_3_cell_vol_14 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_3_cell_vol_13 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+
+BO_ 2165818672 pack_3_cv_09_to_12: 8 Vector__XXX
+ SG_ pack_3_cell_vol_12 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_3_cell_vol_11 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_3_cell_vol_10 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_3_cell_vol_09 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+
+BO_ 2165808671 pack_3_cv_05_to_08: 8 Vector__XXX
+ SG_ pack_3_cell_vol_08 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_3_cell_vol_07 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_3_cell_vol_06 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_3_cell_vol_05 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+
+BO_ 2165798670 pack_3_cv_01_to_04: 8 Vector__XXX
+ SG_ pack_3_cell_vol_04 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_3_cell_vol_03 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_3_cell_vol_02 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_3_cell_vol_01 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+
+BO_ 2165708671 pack_2_cv_05_to_08: 8 Vector__XXX
+ SG_ pack_2_cell_vol_08 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_07 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_06 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_05 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+
+BO_ 2165608671 pack_1_cv_05_to_08: 8 Vector__XXX
+ SG_ pack_1_cell_vol_08 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_1_cell_vol_07 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_1_cell_vol_06 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
  SG_ pack_1_cell_vol_05 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_04 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_03 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
- SG_ pack_1_cell_vol_02 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+
+BO_ 2165598670 pack_1_cv_01_to_04: 8 Vector__XXX
+ SG_ pack_1_cell_vol_04 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_1_cell_vol_03 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_1_cell_vol_02 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
  SG_ pack_1_cell_vol_01 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
 
-BO_ 2165688671 pack_1_cv_05_to_08: 0 Vector__XXX
+BO_ 2165738674 pack_2_cv_17_to_20: 8 Vector__XXX
+ SG_ pack_2_cell_vol_20 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_19 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_18 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_17 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
 
-BO_ 2165588670 pack_1_cv_01_to_04: 0 Vector__XXX
+BO_ 2165728673 pack_2_cv_13_to_16: 8 Vector__XXX
+ SG_ pack_2_cell_vol_16 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_15 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_14 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_13 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+
+BO_ 2165718672 pack_2_cv_09_to_12: 8 Vector__XXX
+ SG_ pack_2_cell_vol_12 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_11 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_10 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_09 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+
+BO_ 2165698670 pack_2_cv_01_to_04: 8 Vector__XXX
+ SG_ pack_2_cell_vol_04 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_03 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_02 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_2_cell_vol_01 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+
+BO_ 2165638674 pack_1_cv_17_to_20: 8 Vector__XXX
+ SG_ pack_1_cell_vol_20 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_1_cell_vol_19 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_1_cell_vol_18 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_1_cell_vol_17 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+
+BO_ 2165628673 pack_1_cv_13_to_16: 8 Vector__XXX
+ SG_ pack_1_cell_vol_16 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_1_cell_vol_15 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_1_cell_vol_14 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_1_cell_vol_13 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+
+BO_ 2165618672 pack_1_cv_09_to_12: 8 Vector__XXX
+ SG_ pack_1_cell_vol_12 : 48|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_1_cell_vol_11 : 32|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_1_cell_vol_10 : 16|16@1+ (1,0) [0|65535] "mv" Vector__XXX
+ SG_ pack_1_cell_vol_09 : 0|16@1+ (1,0) [0|65535] "mv" Vector__XXX
 
 
 
 CM_ BO_ 3221225472 "This is a message for not used signals, created by Vector CANdb++ DBC OLE DB Provider.";
-CM_ SG_ 3221225472 pack_1_cell_vol_02 "1号电池组02号电芯的电压值";
-CM_ SG_ 3221225472 pack_1_cell_vol_01 "1号电池组01号电芯的电压值";
+CM_ SG_ 3221225472 temp_x "温度信号";
+CM_ SG_ 2165598670 pack_1_cell_vol_02 "1号电池组02号电芯的电压值";
+CM_ SG_ 2165598670 pack_1_cell_vol_01 "1号电池组01号电芯的电压值";
 BA_DEF_ SG_  "GenSigSendType" ENUM  "Cyclic","OnWrite","OnWriteWithRepetition","OnChange","OnChangeWithRepetition","IfActive","IfActiveWithRepetition","NoSigSendType";
 BA_DEF_ SG_  "GenSigInactiveValue" INT 0 0;
 BA_DEF_ BO_  "GenMsgCycleTime" INT 0 0;
