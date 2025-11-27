@@ -3,6 +3,8 @@
 #include "led_relay_gpio.h"
 #include "ltc6804_1_task.h"
 
+CAN_TX_FLAG_t flag = {0};  // CAN发送标志位管理句柄
+
 /**
  * @brief   通过can通讯发送电压数据
  * @return  uint8_t:发送状态

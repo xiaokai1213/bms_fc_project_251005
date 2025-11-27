@@ -34,7 +34,7 @@ void NVIC_Init(void) {
 }
 
 /**
- * @brief 系统滴答定时器中断函数
+ * @brief 系统滴答定时器中断函数，每1ms中断一次
  */
 void SysTick_Handler(void) {
    HAL_IncTick();
