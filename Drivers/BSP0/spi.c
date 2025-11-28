@@ -114,10 +114,16 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle) {
  * @param tx_data : 要发送的数据
  */
 void spi1_tx_it(uint16_t tx_size, uint8_t tx_data[]) {
+   uint64_t spi1_tx_timeout = 0;                   // 定义spi1发送超时变量
    spi1_tx_it_end_sign = 0;                        // 重置发送完成标志
    HAL_SPI_Transmit_IT(&hspi1, tx_data, tx_size);  // 启动spi1中断发送
-   while (spi1_tx_it_end_sign == 0) {
-      ;  // 等待发送完成
+   spi1_tx_timeout = sys_time;                     // 记录当前系统时间
+
+   while (spi1_tx_it_end_sign == 0) {                                   // 等待发送完成
+      if ((sys_time - spi1_tx_timeout) > 2000) {                        // 超过2000ms未完成发送，视为超时
+         bmsfc_flag.Fault_Level_01.bits.spi_communication_timeout = 1;  // 设置spi通讯超时故障标志位
+         break;                                                         // 跳出等待循环
+      }
    }
 }
 
@@ -127,9 +133,15 @@ void spi1_tx_it(uint16_t tx_size, uint8_t tx_data[]) {
  * @param rx_data : 要接收的数据
  */
 void spi1_rx_it(uint16_t rx_size, uint8_t* rx_data) {
+   uint64_t spi1_rx_timeout = 0;                  // 定义spi1接收超时变量
    spi1_rx_it_end_sign = 0;                       // 重置接收完成标志
    HAL_SPI_Receive_IT(&hspi1, rx_data, rx_size);  // 启动spi1中断接收
-   while (spi1_rx_it_end_sign == 0) {
-      ;  // 等待接收完成
+   spi1_rx_timeout = sys_time;                    // 记录当前系统时间
+
+   while (spi1_rx_it_end_sign == 0) {                                   // 等待接收完成
+      if ((sys_time - spi1_rx_timeout) > 2000) {                        // 超过2000ms未完成接收，视为超时
+         bmsfc_flag.Fault_Level_01.bits.spi_communication_timeout = 1;  // 设置spi通讯超时故障标志位
+         break;                                                         // 跳出等待循环
+      }
    }
 }

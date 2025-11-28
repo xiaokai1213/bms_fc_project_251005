@@ -10,6 +10,7 @@ volatile task_scheduler_t task_collect_voltage = {0, 200, 0};          // 采集
 volatile task_scheduler_t task_collect_temperature = {0, 210, 0};      // 采集温度周期任务调度器定义
 volatile task_scheduler_t task_can_tx_voltage_send = {0, 500, 0};      // 电压发送周期任务调度器定义
 volatile task_scheduler_t task_can_tx_temperature_send = {0, 500, 0};  // 温度发送周期任务调度器定义
+volatile task_scheduler_t task_read_6804_status = {0, 1000, 0};        // 读取6804状态任务调度器定义
 
 /********************************************************TIM定时器中断****************************************************/
 /**
@@ -51,6 +52,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim) {
       if (task_can_tx_temperature_send.counter >= task_can_tx_temperature_send.period) {
          task_can_tx_temperature_send.counter = 0;  // 重置计数器
          task_can_tx_temperature_send.flag = 1;     // 标志位置1
+      }
+
+      // 更新读取6804状态任务调度器
+      task_read_6804_status.counter++;
+      if (task_read_6804_status.counter >= task_read_6804_status.period) {
+         task_read_6804_status.counter = 0;  // 重置计数器
+         task_read_6804_status.flag = 1;     // 标志位置1
       }
    }
 }

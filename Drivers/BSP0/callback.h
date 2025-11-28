@@ -14,6 +14,7 @@ extern volatile task_scheduler_t task_collect_voltage;          // 采集电压�
 extern volatile task_scheduler_t task_collect_temperature;      // 采集温度周期任务调度器定义
 extern volatile task_scheduler_t task_can_tx_voltage_send;      // 电压发送周期任务调度器定义
 extern volatile task_scheduler_t task_can_tx_temperature_send;  // 温度发送周期任务调度器定义
+extern volatile task_scheduler_t task_read_6804_status;         // 读取6804状态任务调度器定义
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim);  // hal库定时器统一回调函数
 void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef* hspi);         // spi接收回调函数

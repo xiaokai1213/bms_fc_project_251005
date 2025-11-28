@@ -11,7 +11,9 @@ static LTC6804_StateEnum_t ltc6804_state = LTC6804_STATE_IDLE;  // 6804状态机
 
 /**
  * @brief   ltc6804初始化函数，外部接口，暴露给其他模块调用
- * @return  uint8_t  返回错误标志位，0表示无错误，1表示有错误
+ * @return  uint8_t  返回错误标志位
+ * 0:无错误
+ * 1:有错误，PEC校验失败
  */
 uint8_t LTC6804_init(void) {
    uint8_t error = 0;  // 错误标志位，0表示无错误

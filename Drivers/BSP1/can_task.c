@@ -7,7 +7,6 @@ volatile CAN_TX_FLAG_t can_tx_flag = {0};  // CAN发送标志位管理句柄
 
 CAN_ResponseEnum_t can_task_run(CAN_EventEnum_t event) {
    CAN_ResponseEnum_t resp = CAN_RESP_OK;  // 默认响应为正常
-   static uint64_t can_bus_busy_time = 0;  // 记录总线忙时间
 
    can_tx_flag.can_free_mailbox_counter = HAL_CAN_GetTxMailboxesFreeLevel(&hcan1);  // 获取当前空邮箱数量
 
