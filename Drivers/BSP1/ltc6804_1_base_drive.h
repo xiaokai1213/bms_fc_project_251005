@@ -238,13 +238,13 @@ typedef struct {
    union {
       struct {
          uint8_t C1UV : 1;  // 第 0 位：C1UV
-         uint8_t C10V : 1;  // 第 1 位：C10V
+         uint8_t C1OV : 1;  // 第 1 位：C10V
          uint8_t C2UV : 1;  // 第 2 位：C2UV
-         uint8_t C20V : 1;  // 第 3 位：C20V
+         uint8_t C2OV : 1;  // 第 3 位：C20V
          uint8_t C3UV : 1;  // 第 4 位：C3UV
-         uint8_t C30V : 1;  // 第 5 位：C30V
+         uint8_t C3OV : 1;  // 第 5 位：C30V
          uint8_t C4UV : 1;  // 第 6 位：C4UV
-         uint8_t C40V : 1;  // 第 7 位：C40V
+         uint8_t C4OV : 1;  // 第 7 位：C40V
       } bits;
       uint8_t reg_val;
    } STBR2;
@@ -253,13 +253,13 @@ typedef struct {
    union {
       struct {
          uint8_t C5UV : 1;  // 第 0 位：C5UV
-         uint8_t C50V : 1;  // 第 1 位：C50V
+         uint8_t C5OV : 1;  // 第 1 位：C50V
          uint8_t C6UV : 1;  // 第 2 位：C6UV
-         uint8_t C60V : 1;  // 第 3 位：C60V
+         uint8_t C6OV : 1;  // 第 3 位：C60V
          uint8_t C7UV : 1;  // 第 4 位：C7UV
-         uint8_t C70V : 1;  // 第 5 位：C70V
+         uint8_t C7OV : 1;  // 第 5 位：C70V
          uint8_t C8UV : 1;  // 第 6 位：C8UV
-         uint8_t C80V : 1;  // 第 7 位：C80V
+         uint8_t C8OV : 1;  // 第 7 位：C80V
       } bits;
       uint8_t reg_val;
    } STBR3;
@@ -268,13 +268,13 @@ typedef struct {
    union {
       struct {
          uint8_t C9UV : 1;   // 第 0 位：C9UV
-         uint8_t C90V : 1;   // 第 1 位：C90V
+         uint8_t C9OV : 1;   // 第 1 位：C90V
          uint8_t C10UV : 1;  // 第 2 位：C10UV
-         uint8_t C100V : 1;  // 第 3 位：C100V
+         uint8_t C10OV : 1;  // 第 3 位：C100V
          uint8_t C11UV : 1;  // 第 4 位：C11UV
-         uint8_t C110V : 1;  // 第 5 位：C110V
+         uint8_t C11OV : 1;  // 第 5 位：C110V
          uint8_t C12UV : 1;  // 第 6 位：C12UV
-         uint8_t C120V : 1;  // 第 7 位：C120V
+         uint8_t C12OV : 1;  // 第 7 位：C120V
       } bits;
       uint8_t reg_val;
    } STBR4;

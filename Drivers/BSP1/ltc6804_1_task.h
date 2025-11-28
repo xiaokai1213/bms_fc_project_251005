@@ -10,6 +10,7 @@ extern volatile uint64_t sys_time;
 #define total_ic                    2   // 6804芯片数量
 #define LTC6804_VOLTAGE_CONV_MS     10  // 电池电压转换时间
 #define LTC6804_TEMPERATURE_CONV_MS 10  // 温度转换时间
+#define LTC6804_STATUS_READ_MS      5   // 状态寄存器读取时间
 
 extern LTC6804_ConfigRegsTypeDef cfgr_h_ltc6804[total_ic];  // 6804配置寄存器句柄
 extern LTC6804_StatusRegs stat_h_ltc6804[total_ic];         // 6804状态寄存器句柄
@@ -27,6 +28,7 @@ typedef enum {
    LTC6804_EVENT_NONE = 0,             // 无事件
    LTC6804_EVENT_COLLECT_VOLTAGE,      // 采集电压事件
    LTC6804_EVENT_COLLECT_TEMPERATURE,  // 采集温度事件
+   LTC6804_EVENT_READ_STATUS,          // 读取状态寄存器事件
    LTC6804_EVENT
 } LTC6804_EventEnum_t;  // LTC6804事件枚举定义
 
@@ -35,6 +37,7 @@ typedef enum {
    LTC6804_STATE_IDLE = 0,               // 空闲状态
    LTC6804_STATE_WAIT_VOLTAGE_CONV,      // 等待电压转换完成状态
    LTC6804_STATE_WAIT_TEMPERATURE_CONV,  // 等待温度转换完成状态
+   LTC6804_STATE_WAIT_STATUS_READ,       // 等待状态寄存器读取完成状态
    LTC6804_STATE
 } LTC6804_StateEnum_t;  // LTC6804状态机状态枚举定义
 

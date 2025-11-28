@@ -7,6 +7,7 @@ volatile CAN_TX_FLAG_t can_tx_flag = {0};  // CAN发送标志位管理句柄
 
 CAN_ResponseEnum_t can_task_run(CAN_EventEnum_t event) {
    CAN_ResponseEnum_t resp = CAN_RESP_OK;  // 默认响应为正常
+   static uint64_t can_bus_busy_time = 0;  // 记录总线忙时间
 
    can_tx_flag.can_free_mailbox_counter = HAL_CAN_GetTxMailboxesFreeLevel(&hcan1);  // 获取当前空邮箱数量
 
@@ -126,35 +127,35 @@ uint8_t can_tx_voltage_data(void) {
 
    // 检查电压报文1发送标志位
    if (can_tx_flag.voltage_can_tx_01_to_04_ready_flag == 1) {
-      if (can_tx_extid_8(can_tx_id_voltage_01_to_04, cv01to04[8]) == 0) {
+      if (can_tx_extid_8(can_tx_id_voltage_01_to_04, cv01to04) == 0) {
          can_tx_flag.voltage_can_tx_01_to_04_ready_flag = 0;  // 发送位置0
       }
    }
 
    // 检查电压报文2发送标志位
    if (can_tx_flag.voltage_can_tx_05_to_08_ready_flag == 1) {
-      if (can_tx_extid_8(can_tx_id_voltage_05_to_08, cv05to08[8]) == 0) {
+      if (can_tx_extid_8(can_tx_id_voltage_05_to_08, cv05to08) == 0) {
          can_tx_flag.voltage_can_tx_05_to_08_ready_flag = 0;  // 发送位置0
       }
    }
 
    // 检查电压报文3发送标志位
    if (can_tx_flag.voltage_can_tx_09_to_12_ready_flag == 1) {
-      if (can_tx_extid_8(can_tx_id_voltage_09_to_12, cv09to12[8]) == 0) {
+      if (can_tx_extid_8(can_tx_id_voltage_09_to_12, cv09to12) == 0) {
          can_tx_flag.voltage_can_tx_09_to_12_ready_flag = 0;  // 发送位置0
       }
    }
 
    // 检查电压报文4发送标志位
    if (can_tx_flag.voltage_can_tx_13_to_16_ready_flag == 1) {
-      if (can_tx_extid_8(can_tx_id_voltage_13_to_16, cv13to16[8]) == 0) {
+      if (can_tx_extid_8(can_tx_id_voltage_13_to_16, cv13to16) == 0) {
          can_tx_flag.voltage_can_tx_13_to_16_ready_flag = 0;  // 发送位置0
       }
    }
 
    // 检查电压报文4发送标志位
    if (can_tx_flag.voltage_can_tx_17_to_20_ready_flag == 1) {
-      if (can_tx_extid_8(can_tx_id_voltage_17_to_20, cv17to20[8]) == 0) {
+      if (can_tx_extid_8(can_tx_id_voltage_17_to_20, cv17to20) == 0) {
          can_tx_flag.voltage_can_tx_17_to_20_ready_flag = 0;  // 发送位置0
       }
    }
@@ -232,19 +233,19 @@ uint8_t can_tx_temperature_data(void) {
 
    // 检查温度报文1发送标志位
    if (can_tx_flag.temperature_can_tx_01_to_04_ready_flag == 1) {
-      if (can_tx_extid_8(can_tx_id_temperature_01_to_04, ct01to04[8]) == 0) {
+      if (can_tx_extid_8(can_tx_id_temperature_01_to_04, ct01to04) == 0) {
          can_tx_flag.temperature_can_tx_01_to_04_ready_flag = 0;  // 发送位置0
       }
    }
    // 检查温度报文2发送标志位
    if (can_tx_flag.temperature_can_tx_05_to_08_ready_flag == 1) {
-      if (can_tx_extid_8(can_tx_id_temperature_05_to_08, ct05to08[8]) == 0) {
+      if (can_tx_extid_8(can_tx_id_temperature_05_to_08, ct05to08) == 0) {
          can_tx_flag.temperature_can_tx_05_to_08_ready_flag = 0;  // 发送位置0
       }
    }
    // 检查温度报文3发送标志位
    if (can_tx_flag.temperature_can_tx_09_to_10_ready_flag == 1) {
-      if (can_tx_extid_8(can_tx_id_temperature_09_to_10, ct09to10[8]) == 0) {
+      if (can_tx_extid_8(can_tx_id_temperature_09_to_10, ct09to10) == 0) {
          can_tx_flag.temperature_can_tx_09_to_10_ready_flag = 0;  // 发送位置0
       }
    }
