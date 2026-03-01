@@ -40,8 +40,9 @@ int main() {
    SPI1_Init();            // spi1初始化
    CAN_Init();             // can外设初始化
    NVIC_Init();            // 中断初始化；中断统一管理
-   // ltc6804初始化
-   LTC6804_init();
+
+   LTC6804_init();      // ltc6804初始化
+   CAN_Address_init();  // can地址初始化
 
    while (1) {
       task_run();  // 任务循环
