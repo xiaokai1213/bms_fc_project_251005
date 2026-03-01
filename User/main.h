@@ -13,5 +13,6 @@
 extern volatile uint64_t sys_time;  // 系统时间变量，单位：毫秒
 
 // 函数声明
+void error_handler(uint8_t error_code);
 
 #endif  // _MAIN_H

@@ -19,8 +19,18 @@
 
 volatile uint64_t sys_time = 0;  // 系统时间变量，单位：毫秒
 
-// 主函数
+/**
+ * @brief  主函数
+ * @param  无
+ * @retval 无
+ */
 int main() {
+   /**
+    * 1.外设初始化
+    * 2.ltc6804初始化
+    * 3.can通信初始化
+    * 4.进入任务循环
+    */
    HAL_Init();             // HAL库初始化
    Stm32_Clock_Init();     // 时钟初始化
    uart_init(115200);      // 串口1初始化，中断收发，支持打印函数
@@ -33,6 +43,16 @@ int main() {
    // ltc6804初始化
    LTC6804_init();
 
+   while (1) {
+   }
+}
+
+/**
+ * @brief  错误处理函数
+ * @param  uint8_t error_code
+ * @retval 无
+ */
+void error_handler(uint8_t error_code) {
    while (1) {
    }
 }

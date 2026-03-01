@@ -73,7 +73,7 @@ void TIM4_Init(void) {
 }
 
 /**
- * @brief   TIM2底层硬件初始化函数,被HAL_TIM_Base_Init调用
+ * @brief   TIM底层硬件初始化函数,被HAL_TIM_Base_Init调用
  * @param   tim_baseHandle TIM句柄指针
  * @retval  无
  */
