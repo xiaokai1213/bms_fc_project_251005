@@ -1,4 +1,5 @@
 #include "task_manager.h"
+#include "can_task.h"
 #include "ltc6804_1_task.h"
 
 /*

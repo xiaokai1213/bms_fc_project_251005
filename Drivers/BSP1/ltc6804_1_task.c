@@ -1,5 +1,6 @@
 #include "ltc6804_1_task.h"
 #include "delay.h"
+#include "ltc6804_1_base_drive.h"
 #include "main.h"
 #include "task_manager.h"
 
@@ -101,9 +102,9 @@ void re_6804_cell_vot(void) {
  * @return  无
  */
 void re_6804_aux_vot(void) {
-   LTC6804_adax(MD_NORMAL, CHG_ALL);                            // 启动辅助电压转换
-   delay_ms(4);                                                 // 等待转换完成
-   read_LTC6804_Aux_voltage_registers(total_ic, av_h_ltc6804);  // 读取辅助电压数据
+   LTC6804_adax(MD_NORMAL, CHG_ALL);                                  // 启动辅助电压转换
+   delay_ms(4);                                                       // 等待转换完成
+   read_LTC6804_Auxiliary_voltage_registers(total_ic, av_h_ltc6804);  // 读取辅助电压数据
 }
 
 /**
@@ -112,5 +113,5 @@ void re_6804_aux_vot(void) {
  * @return  无
  */
 void re_6804_stat(void) {
-   read_LTC6804_Status_registers(total_ic, stat_h_ltc6804);  // 读取状态寄存器数据
+   read_LTC6804_status_registers(total_ic, stat_h_ltc6804);  // 读取状态寄存器数据
 }
