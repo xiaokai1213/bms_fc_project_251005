@@ -44,6 +44,7 @@ int main() {
    LTC6804_init();
 
    while (1) {
+      task_run();  // 任务循环
    }
 }
 

@@ -13,6 +13,11 @@ can报文中断接收
  */
 void task_run(void) {
    while (1) {
-      wr_6804_reg();  // 写入6804配置
+      wr_6804_reg();        // 写入6804配置
+      re_6804_cell_vot();   // 读取电池电压
+      re_6804_aux_vot();    // 读取辅助电压
+      re_6804_stat();       // 读取状态寄存器
+      send_cell_vot_can();  // 发送电池电压can报文
+      send_aux_vot_can();   // 发送辅助电压can报文
    }
 }

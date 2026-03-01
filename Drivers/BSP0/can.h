@@ -5,7 +5,9 @@
 
 extern CAN_HandleTypeDef hcan1;  // can外设初始化句柄
 
-void CAN_Init(void);  // can外设初始化函数
+void CAN_Init(void);                                      // can外设初始化函数
+void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle);       // can底层硬件初始化函数
+uint8_t can_tx_extid_8(uint32_t extid, uint8_t data[8]);  // 扩展can发送八位数据帧函数
 
 #endif  // _CAN_H
 
